@@ -8,7 +8,7 @@ function corruptedArea(a, b) {
   return square;
 }
 
-function quantityDots(a) {
+function arraySum(a) {
   var sum = 0;
   for (var x = 0; x < a.length; x++) {
     sum += a[x];
@@ -28,7 +28,7 @@ function getMessage(a, b) {
     var square = corruptedArea(a, b);
     return ('Общая площадь артефактов сжатия: ' + square + ' пикселей');
   } else if (a instanceof Array) {
-    var sum = quantityDots(a);
+    var sum = arraySum(a);
     return ('Количество красных точек во всех строчках изображения: ' + sum);
   }
   return (a, b);
