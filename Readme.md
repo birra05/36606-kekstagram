@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Алена Горюшина](https://up.htmlacademy.ru/javascript/4/user/36606).
-* Наставник: `Неизвестно`.
+* Наставник: `Мартин Шульц`.
 
 ---
 
