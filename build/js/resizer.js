@@ -89,14 +89,14 @@
       // чего-либо с другой обводкой.
 
       // Толщина линии.
-      this._ctx.lineWidth = 6;
-      // Цвет обводки.
-      this._ctx.strokeStyle = '#ffe753';
+      this._ctx.lineWidth = 3; //изменено для зигзага
+      // // Цвет обводки.
+      // this._ctx.strokeStyle = '#ffe753';
       // Размер штрихов. Первый элемент массива задает длину штриха, второй
       // расстояние между соседними штрихами.
-      this._ctx.setLineDash([15, 10]);
+      // this._ctx.setLineDash([15, 10]);
       // Смещение первого штриха от начала линии.
-      this._ctx.lineDashOffset = 7;
+      // this._ctx.lineDashOffset = 7;
 
       // Сохранение состояния канваса.
       // Подробней см. строку 132.
@@ -127,11 +127,11 @@
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
-      this._ctx.strokeRect(
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2);
+      // this._ctx.strokeRect(
+      //     (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      //     (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      //     this._resizeConstraint.side - this._ctx.lineWidth / 2,
+      //     this._resizeConstraint.side - this._ctx.lineWidth / 2);
 
       // Вывести размеры кадрируемого изображения над рамкой
       this._ctx.fillStyle = '#fff';
@@ -144,6 +144,32 @@
 
       var textMessage = this._container.width + ' x ' + this._container.height;
       this._ctx.fillText(textMessage, textX, textY);
+
+      // Попытка сделать так, чтобы рамка рисовалась жёлтыми зигзагами
+      this._ctx.strokeStyle = '#ffe753';
+
+      var lineLength = this._resizeConstraint.side;
+      var lineWidth = this._ctx.lineWidth;
+      var startX = -lineLength / 2 - lineWidth / 2;
+      var startY = -lineLength / 2 - lineWidth / 2;
+      var zigzagSpacing = 10;
+
+      this._ctx.beginPath();
+      this._ctx.moveTo(startX, startY);
+
+      for (var n = 0; n < lineLength / zigzagSpacing; n++) {
+        var x = startX + (n + 1) * zigzagSpacing;
+        var y;
+
+        if (n % 2 === 0) {
+          y = startY + 10;
+        } else {
+          y = startY;
+        }
+        this._ctx.lineTo(x, y);
+      }
+
+      this._ctx.stroke();
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
