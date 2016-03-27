@@ -112,6 +112,19 @@
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
+      // Вокруг жёлтой рамки, рисующей ограничение, рисуется чёрный слой с прозрачностью 80%
+      this._ctx.fillStyle = 'rgba(0,0,0,0.8)';
+
+      this._ctx.beginPath();
+      this._ctx.rect(displX, displY, this._container.width, this._container.height);
+      this._ctx.rect(
+          this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2,
+          -this._resizeConstraint.side / 2 - this._ctx.lineWidth,
+         -this._resizeConstraint.side - this._ctx.lineWidth / 2,
+          this._resizeConstraint.side + this._ctx.lineWidth / 2
+        );
+      this._ctx.fill();
+
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
       this._ctx.strokeRect(
@@ -119,6 +132,18 @@
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2);
+
+      // Вывести размеры кадрируемого изображения над рамкой
+      this._ctx.fillStyle = '#fff';
+      this._ctx.font = '20px Open Sans';
+      this._ctx.textAlign = 'center';
+
+      // Точки отсчета для вывода текста
+      var textX = 0;
+      var textY = -this._resizeConstraint.side / 2 - this._ctx.lineWidth * 2;
+
+      var textMessage = this._container.width + ' x ' + this._container.height;
+      this._ctx.fillText(textMessage, textX, textY);
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
