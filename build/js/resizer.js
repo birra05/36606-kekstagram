@@ -112,7 +112,7 @@
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
-      // Вокруг жёлтой рамки, рисующей ограничение, рисуется чёрный слой с прозрачностью 80%
+      // Вокруг жёлтой ограничительной рамки рисуется чёрный слой с прозрачностью 80%
       this._ctx.fillStyle = 'rgba(0,0,0,0.8)';
 
       this._ctx.beginPath();
@@ -137,37 +137,88 @@
       this._ctx.fillStyle = '#fff';
       this._ctx.font = '20px Open Sans';
       this._ctx.textAlign = 'center';
+      this._ctx.textBaseline = 'bottom';
 
       // Точки отсчета для вывода текста
       var textX = 0;
-      var textY = -this._resizeConstraint.side / 2 - this._ctx.lineWidth * 2;
+      var textY = -this._resizeConstraint.side / 2 - this._ctx.lineWidth * 3;
 
       var textMessage = this._container.width + ' x ' + this._container.height;
       this._ctx.fillText(textMessage, textX, textY);
 
-      // Попытка сделать так, чтобы рамка рисовалась жёлтыми зигзагами
+      // Рамка, нарисованная зигзагами
       this._ctx.strokeStyle = '#ffe753';
 
       var lineLength = this._resizeConstraint.side;
       var lineWidth = this._ctx.lineWidth;
       var startX = -lineLength / 2 - lineWidth / 2;
-      var startY = -lineLength / 2 - lineWidth / 2;
+      var startY = startX;
       var zigzagSpacing = 10;
+      var zigzagQuantity = Math.ceil(lineLength / zigzagSpacing);
 
       this._ctx.beginPath();
       this._ctx.moveTo(startX, startY);
 
-      for (var n = 0; n < lineLength / zigzagSpacing; n++) {
-        var x = startX + (n + 1) * zigzagSpacing;
-        var y;
+      this.drawZigzagFirst = function() {
+        for (var n = 0; n < zigzagQuantity; n++) {
+          var x = startX + (n + 1) * zigzagSpacing;
+          var y;
 
-        if (n % 2 === 0) {
-          y = startY + 10;
-        } else {
-          y = startY;
+          if (n % 2 === 0) {
+            y = startY - zigzagSpacing;
+          } else {
+            y = startY;
+          }
+          this._ctx.lineTo(x, y);
         }
-        this._ctx.lineTo(x, y);
-      }
+      };
+
+      this.drawZigzagSecond = function() {
+        for (var n = 0; n < zigzagQuantity; n++) {
+          var x;
+          var y = startY + (n + 1) * zigzagSpacing;
+
+          if (n % 2 === 0) {
+            x = startX + zigzagSpacing;
+          } else {
+            x = startX;
+          }
+          this._ctx.lineTo(x + lineLength, y);
+        }
+      };
+
+      this.drawZigzagThird = function() {
+        for (var n = 0; n < zigzagQuantity; n++) {
+          var x = startX + lineLength + n * zigzagSpacing;
+          var y;
+
+          if (n % 2 === 0) {
+            y = startY + lineLength;
+          } else {
+            y = startY + lineLength + zigzagSpacing;
+          }
+          this._ctx.lineTo(lineLength - lineWidth - x, y);
+        }
+      };
+
+      this.drawZigzagFourth = function() {
+        for (var n = 0; n < zigzagQuantity; n++) {
+          var x;
+          var y = startY + (n + 1) * zigzagSpacing;
+
+          if (n % 2 === 0) {
+            x = startX;
+          } else {
+            x = startX + zigzagSpacing;
+          }
+          this._ctx.lineTo(x - zigzagSpacing, -y - lineWidth);
+        }
+      };
+
+      this.drawZigzagFirst();
+      this.drawZigzagSecond();
+      this.drawZigzagThird();
+      this.drawZigzagFourth();
 
       this._ctx.stroke();
 
