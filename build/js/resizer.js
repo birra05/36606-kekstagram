@@ -229,14 +229,14 @@
       // Рамка, нарисованная точками
       this._ctx.fillStyle = '#ffe753';
 
-      this._ctx.beginPath();
-
       this.drawDottedTop = function() {
         var x = startX;
         var y = startY;
 
         for(var i = x; i <= x + lineLength; i += 15) {
+          this._ctx.beginPath();
           this._ctx.arc(i, y, 3, 0, Math.PI * 2);
+          this._ctx.closePath();
           this._ctx.fill();
           // console.log('верхняя линия x: ', x, 'верхняя линия y: ', y);
         }
@@ -247,7 +247,9 @@
         var y = startY;
 
         for(var i = y; i <= y + lineLength; i += 15 ) {
+          this._ctx.beginPath();
           this._ctx.arc(x, i, 3, 0, Math.PI * 2);
+          this._ctx.closePath();
           this._ctx.fill();
           // console.log('правая линия x: ', x, 'правая линия y: ', y);
         }
@@ -257,8 +259,10 @@
         var x = startX + lineLength + lineWidth;
         var y = -startY;
 
-        for(var i = x; i <= x + lineLength; i += 15 ) {
+        for(var i = x; i >= x - lineLength - lineWidth; i -= 15 ) {
+          this._ctx.beginPath();
           this._ctx.arc(i, y, 3, 0, Math.PI * 2);
+          this._ctx.closePath();
           this._ctx.fill();
           // console.log('нижняя линия x: ', x, 'нижняя линия y: ', y);
         }
@@ -268,9 +272,12 @@
         var x = startX;
         var y = -startY;
 
-        for(var i = y; i <= y + lineLength; i += 15 ) {
+        for(var i = y; i >= y - lineLength - lineWidth; i -= 15 ) {
+          this._ctx.beginPath();
           this._ctx.arc(x, i, 3, 0, Math.PI * 2);
+          this._ctx.closePath();
           this._ctx.fill();
+          // console.log('куда рисуется левая линия по y: ', y - lineLength - lineWidth);
           // console.log('левая линия x: ', x, 'левая линия y: ', y);
         }
       };
