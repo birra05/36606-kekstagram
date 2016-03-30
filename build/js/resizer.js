@@ -89,14 +89,14 @@
       // чего-либо с другой обводкой.
 
       // Толщина линии.
-      this._ctx.lineWidth = 6;
-      // Цвет обводки.
-      this._ctx.strokeStyle = '#ffe753';
+      this._ctx.lineWidth = 3; //изменено для зигзага
+      // // Цвет обводки.
+      // this._ctx.strokeStyle = '#ffe753';
       // Размер штрихов. Первый элемент массива задает длину штриха, второй
       // расстояние между соседними штрихами.
-      this._ctx.setLineDash([15, 10]);
+      // this._ctx.setLineDash([15, 10]);
       // Смещение первого штриха от начала линии.
-      this._ctx.lineDashOffset = 7;
+      // this._ctx.lineDashOffset = 7;
 
       // Сохранение состояния канваса.
       // Подробней см. строку 132.
@@ -112,13 +112,182 @@
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
+      // Вокруг жёлтой ограничительной рамки рисуется чёрный слой с прозрачностью 80%
+      this._ctx.fillStyle = 'rgba(0,0,0,0.8)';
+
+      this._ctx.beginPath();
+      this._ctx.rect(displX, displY, this._container.width, this._container.height);
+      this._ctx.rect(
+          this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2,
+          -this._resizeConstraint.side / 2 - this._ctx.lineWidth,
+         -this._resizeConstraint.side - this._ctx.lineWidth / 2,
+          this._resizeConstraint.side + this._ctx.lineWidth / 2
+        );
+      this._ctx.fill();
+
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
-      this._ctx.strokeRect(
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2);
+      // this._ctx.strokeRect(
+      //     (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      //     (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      //     this._resizeConstraint.side - this._ctx.lineWidth / 2,
+      //     this._resizeConstraint.side - this._ctx.lineWidth / 2);
+
+      // Вывести размеры кадрируемого изображения над рамкой
+      this._ctx.fillStyle = '#fff';
+      this._ctx.font = '20px Open Sans';
+      this._ctx.textAlign = 'center';
+      this._ctx.textBaseline = 'bottom';
+
+      // Точки отсчета для вывода текста
+      var textX = 0;
+      var textY = -this._resizeConstraint.side / 2 - this._ctx.lineWidth * 3;
+
+      var textMessage = this._container.width + ' x ' + this._container.height;
+      this._ctx.fillText(textMessage, textX, textY);
+
+      // Рамка, нарисованная зигзагами
+      this._ctx.strokeStyle = '#ffe753';
+
+      var lineLength = this._resizeConstraint.side;
+      var lineWidth = this._ctx.lineWidth;
+      var startX = -lineLength / 2 - lineWidth / 2;
+      var startY = startX;
+      var zigzagSpacing = 10;
+      var zigzagNumber = Math.ceil(lineLength / zigzagSpacing);
+
+      this._ctx.beginPath();
+      this._ctx.moveTo(startX, startY);
+
+      this.drawZigzagTop = function() {
+        for (var n = 0; n < zigzagNumber; n++) {
+          var x = startX + (n + 1) * zigzagSpacing;
+          var y;
+
+          if (n % 2 === 0) {
+            y = startY - zigzagSpacing;
+          } else {
+            y = startY;
+          }
+          this._ctx.lineTo(x, y);
+          // console.log('верхняя линия x: ', x, 'верхняя линия y: ', y);
+        }
+      };
+
+      this.drawZigzagRight = function() {
+        for (var n = 0; n < zigzagNumber; n++) {
+          var x;
+          var y = startY + (n + 1) * zigzagSpacing;
+
+          if (n % 2 === 0) {
+            x = startX + zigzagSpacing;
+          } else {
+            x = startX;
+          }
+          this._ctx.lineTo(x + lineLength, y);
+          // console.log('правая линия x: ', x, 'правая линия y: ', y);
+        }
+      };
+
+      this.drawZigzagBottom = function() {
+        for (var n = 0; n < zigzagNumber; n++) {
+          var x = startX + lineLength + n * zigzagSpacing;
+          var y;
+
+          if (n % 2 === 0) {
+            y = startY + lineLength;
+          } else {
+            y = startY + lineLength + zigzagSpacing;
+          }
+          this._ctx.lineTo(lineLength - lineWidth - x, y);
+          // console.log('нижняя линия x: ', x, 'нижняя линия y: ', y);
+        }
+      };
+
+      this.drawZigzagLeft = function() {
+        for (var n = 0; n < zigzagNumber; n++) {
+          var x;
+          var y = startY + (n + 1) * zigzagSpacing;
+
+          if (n % 2 === 0) {
+            x = startX;
+          } else {
+            x = startX + zigzagSpacing;
+          }
+          this._ctx.lineTo(x - zigzagSpacing, -y - lineWidth);
+          // console.log('левая линия x: ', x, 'левая линия y: ', y);
+        }
+      };
+
+      this.drawZigzagTop();
+      this.drawZigzagRight();
+      this.drawZigzagBottom();
+      this.drawZigzagLeft();
+
+      // this._ctx.stroke();
+
+      // Рамка, нарисованная точками
+      this._ctx.fillStyle = '#ffe753';
+
+      this.drawDottedTop = function() {
+        var x = startX;
+        var y = startY;
+
+        for(var i = x; i <= x + lineLength; i += 15) {
+          this._ctx.beginPath();
+          this._ctx.arc(i, y, 3, 0, Math.PI * 2);
+          this._ctx.closePath();
+          this._ctx.fill();
+          // console.log('верхняя линия x: ', x, 'верхняя линия y: ', y);
+        }
+      };
+
+      this.drawDottedRight = function() {
+        var x = -startX;
+        var y = startY;
+
+        for(var i = y; i <= y + lineLength; i += 15 ) {
+          this._ctx.beginPath();
+          this._ctx.arc(x, i, 3, 0, Math.PI * 2);
+          this._ctx.closePath();
+          this._ctx.fill();
+          // console.log('правая линия x: ', x, 'правая линия y: ', y);
+        }
+      };
+
+      this.drawDottedBottom = function() {
+        var x = startX + lineLength + lineWidth;
+        var y = -startY;
+
+        for(var i = x; i >= x - lineLength - lineWidth; i -= 15 ) {
+          this._ctx.beginPath();
+          this._ctx.arc(i, y, 3, 0, Math.PI * 2);
+          this._ctx.closePath();
+          this._ctx.fill();
+          // console.log('нижняя линия x: ', x, 'нижняя линия y: ', y);
+        }
+      };
+
+      this.drawDottedLeft = function() {
+        var x = startX;
+        var y = -startY;
+
+        for(var i = y; i >= y - lineLength - lineWidth; i -= 15 ) {
+          this._ctx.beginPath();
+          this._ctx.arc(x, i, 3, 0, Math.PI * 2);
+          this._ctx.closePath();
+          this._ctx.fill();
+          // console.log('куда рисуется левая линия по y: ', y - lineLength - lineWidth);
+          // console.log('левая линия x: ', x, 'левая линия y: ', y);
+        }
+      };
+
+      this.drawDottedTop();
+      this.drawDottedRight();
+      this.drawDottedBottom();
+      this.drawDottedLeft();
+
+      // this._ctx.stroke();
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
