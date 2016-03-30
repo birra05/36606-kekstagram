@@ -154,13 +154,13 @@
       var startX = -lineLength / 2 - lineWidth / 2;
       var startY = startX;
       var zigzagSpacing = 10;
-      var zigzagQuantity = Math.ceil(lineLength / zigzagSpacing);
+      var zigzagNumber = Math.ceil(lineLength / zigzagSpacing);
 
       this._ctx.beginPath();
       this._ctx.moveTo(startX, startY);
 
-      this.drawZigzagFirst = function() {
-        for (var n = 0; n < zigzagQuantity; n++) {
+      this.drawZigzagTop = function() {
+        for (var n = 0; n < zigzagNumber; n++) {
           var x = startX + (n + 1) * zigzagSpacing;
           var y;
 
@@ -170,11 +170,12 @@
             y = startY;
           }
           this._ctx.lineTo(x, y);
+          // console.log('верхняя линия x: ', x, 'верхняя линия y: ', y);
         }
       };
 
-      this.drawZigzagSecond = function() {
-        for (var n = 0; n < zigzagQuantity; n++) {
+      this.drawZigzagRight = function() {
+        for (var n = 0; n < zigzagNumber; n++) {
           var x;
           var y = startY + (n + 1) * zigzagSpacing;
 
@@ -184,11 +185,12 @@
             x = startX;
           }
           this._ctx.lineTo(x + lineLength, y);
+          // console.log('правая линия x: ', x, 'правая линия y: ', y);
         }
       };
 
-      this.drawZigzagThird = function() {
-        for (var n = 0; n < zigzagQuantity; n++) {
+      this.drawZigzagBottom = function() {
+        for (var n = 0; n < zigzagNumber; n++) {
           var x = startX + lineLength + n * zigzagSpacing;
           var y;
 
@@ -198,11 +200,12 @@
             y = startY + lineLength + zigzagSpacing;
           }
           this._ctx.lineTo(lineLength - lineWidth - x, y);
+          // console.log('нижняя линия x: ', x, 'нижняя линия y: ', y);
         }
       };
 
-      this.drawZigzagFourth = function() {
-        for (var n = 0; n < zigzagQuantity; n++) {
+      this.drawZigzagLeft = function() {
+        for (var n = 0; n < zigzagNumber; n++) {
           var x;
           var y = startY + (n + 1) * zigzagSpacing;
 
@@ -212,15 +215,72 @@
             x = startX + zigzagSpacing;
           }
           this._ctx.lineTo(x - zigzagSpacing, -y - lineWidth);
+          // console.log('левая линия x: ', x, 'левая линия y: ', y);
         }
       };
 
-      this.drawZigzagFirst();
-      this.drawZigzagSecond();
-      this.drawZigzagThird();
-      this.drawZigzagFourth();
+      this.drawZigzagTop();
+      this.drawZigzagRight();
+      this.drawZigzagBottom();
+      this.drawZigzagLeft();
 
-      this._ctx.stroke();
+      // this._ctx.stroke();
+
+      // Рамка, нарисованная точками
+      this._ctx.fillStyle = '#ffe753';
+
+      this._ctx.beginPath();
+
+      this.drawDottedTop = function() {
+        var x = startX;
+        var y = startY;
+
+        for(var i = x; i <= x + lineLength; i += 15) {
+          this._ctx.arc(i, y, 3, 0, Math.PI * 2);
+          this._ctx.fill();
+          // console.log('верхняя линия x: ', x, 'верхняя линия y: ', y);
+        }
+      };
+
+      this.drawDottedRight = function() {
+        var x = -startX;
+        var y = startY;
+
+        for(var i = y; i <= y + lineLength; i += 15 ) {
+          this._ctx.arc(x, i, 3, 0, Math.PI * 2);
+          this._ctx.fill();
+          // console.log('правая линия x: ', x, 'правая линия y: ', y);
+        }
+      };
+
+      this.drawDottedBottom = function() {
+        var x = startX + lineLength + lineWidth;
+        var y = -startY;
+
+        for(var i = x; i <= x + lineLength; i += 15 ) {
+          this._ctx.arc(i, y, 3, 0, Math.PI * 2);
+          this._ctx.fill();
+          // console.log('нижняя линия x: ', x, 'нижняя линия y: ', y);
+        }
+      };
+
+      this.drawDottedLeft = function() {
+        var x = startX;
+        var y = -startY;
+
+        for(var i = y; i <= y + lineLength; i += 15 ) {
+          this._ctx.arc(x, i, 3, 0, Math.PI * 2);
+          this._ctx.fill();
+          // console.log('левая линия x: ', x, 'левая линия y: ', y);
+        }
+      };
+
+      this.drawDottedTop();
+      this.drawDottedRight();
+      this.drawDottedBottom();
+      this.drawDottedLeft();
+
+      // this._ctx.stroke();
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
