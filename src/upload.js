@@ -67,6 +67,26 @@
     backgroundElement.style.backgroundImage = 'url(' + images[randomImageNumber] + ')';
   }
 
+  // Находим формы
+  var formResizeLeft = document.querySelector('#resize-x');
+  var formResizeTop = document.querySelector('#resize-y');
+  var formResizeSide = document.querySelector('#resize-size');
+  var formResizeButton = document.querySelector('#resize-fwd');
+
+  console.log(formResizeLeft.value);
+
+  // Установка лимитов значений полей
+  var sumLimit = function() {
+    if (formResizeLeft.value + formResizeSide.value > currentResizer._image.naturalWidth || formResizeTop.value + formResizeSide.value > currentResizer._image.naturalHeight) {
+      formResizeButton.disabled = true;
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  sumLimit();
+
   /**
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
