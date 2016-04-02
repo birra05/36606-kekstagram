@@ -67,32 +67,17 @@
     backgroundElement.style.backgroundImage = 'url(' + images[randomImageNumber] + ')';
   }
 
-  // Находим формы
-  var formResizeLeft = document.querySelector('#resize-x');
-  var formResizeTop = document.querySelector('#resize-y');
-  var formResizeSide = document.querySelector('#resize-size');
-  var formResizeButton = document.querySelector('#resize-fwd');
-
-  console.log(formResizeLeft.value);
-
-  // Установка лимитов значений полей
-  var sumLimit = function() {
-    if (formResizeLeft.value + formResizeSide.value > currentResizer._image.naturalWidth || formResizeTop.value + formResizeSide.value > currentResizer._image.naturalHeight) {
-      formResizeButton.disabled = true;
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  sumLimit();
-
   /**
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
-  function resizeFormIsValid() {
-    return true;
+  function resizeFormIsValid(resizer) {
+    if(resizeLeft.value + resizeSide.value > resizer._image.naturalWidth ||
+    resizeTop.value + resizeSide.value > resizer._image.naturalHeight) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   /**
@@ -179,6 +164,9 @@
           uploadForm.classList.add('invisible');
           resizeForm.classList.remove('invisible');
 
+          setValues();
+          console.log(typeof (setValues()));
+
           hideMessage();
         };
 
@@ -207,6 +195,44 @@
   };
 
   /**
+  Начальные значения в форме после загрузки изображения
+  **/
+  var resizeLeft = document.querySelector('#resize-x');
+  var resizeTop = document.querySelector('#resize-y');
+  var resizeSide = document.querySelector('#resize-size');
+  var resizeButton = document.querySelector('#resize-fwd');
+  var imageWidth = currentResizer._image.naturalWidth;
+  var imageHeight = currentResizer._image.naturalHeight;
+
+  var setValues = function() {
+    resizeLeft.value = 0;
+    resizeTop.value = 0;
+    resizeSide.value = Math.min(imageWidth, imageHeight);
+
+    resizeLeft.min = 0;
+    resizeTop.min = 0;
+    resizeSide.min = 0;
+
+    resizeLeft.max = imageWidth;
+    resizeTop.max = imageHeight;
+    resizeSide.max = resizeSide.value;
+
+    resizeButton.disabled = false;
+  };
+
+  /**
+   * Проверка вводимых значений
+   */
+
+  // resizeForm.oninput = function(resizer) {
+  //   if(+resizeLeft.value + +resizeSide.value > resizer._image.naturalWidth ||
+  //     +resizeTop.value + +resizeSide.value > resizer._image.naturalHeight) {
+  //     console.log('test');
+  //     resizeButton.disabled = true;
+  //   }
+  // };
+
+  /**
    * Обработка отправки формы кадрирования. Если форма валидна, экспортирует
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
@@ -219,6 +245,8 @@
 
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
+    } else {
+      resizeButton.disabled = true;
     }
   };
 
