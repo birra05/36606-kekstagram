@@ -165,7 +165,7 @@
           resizeForm.classList.remove('invisible');
 
           setValues();
-          console.log(typeof (setValues()));
+          console.log(setValues());
 
           hideMessage();
         };
@@ -201,10 +201,11 @@
   var resizeTop = document.querySelector('#resize-y');
   var resizeSide = document.querySelector('#resize-size');
   var resizeButton = document.querySelector('#resize-fwd');
-  var imageWidth = currentResizer._image.naturalWidth;
-  var imageHeight = currentResizer._image.naturalHeight;
 
   var setValues = function() {
+    var imageWidth = currentResizer._image.naturalWidth;
+    var imageHeight = currentResizer._image.naturalHeight;
+
     resizeLeft.value = 0;
     resizeTop.value = 0;
     resizeSide.value = Math.min(imageWidth, imageHeight);
@@ -224,13 +225,27 @@
    * Проверка вводимых значений
    */
 
-  // resizeForm.oninput = function(resizer) {
-  //   if(+resizeLeft.value + +resizeSide.value > resizer._image.naturalWidth ||
-  //     +resizeTop.value + +resizeSide.value > resizer._image.naturalHeight) {
-  //     console.log('test');
-  //     resizeButton.disabled = true;
-  //   }
-  // };
+  resizeForm.oninput = function() {
+    var imageWidth = currentResizer._image.naturalWidth;
+    var imageHeight = currentResizer._image.naturalHeight;
+
+    var x = +resizeLeft.value + +resizeSide.value;
+    var y = +resizeTop.value + +resizeSide.value;
+
+    if(x > imageWidth) {
+      console.log('testXtrue');
+      resizeButton.disabled = true;
+    } else if(y > imageHeight) {
+      console.log('testYtrue');
+      resizeButton.disabled = true;
+    } else if (x <= imageWidth) {
+      console.log('testXfalse');
+      resizeButton.disabled = false;
+    } else {
+      console.log('testYfalse');
+      resizeButton.disabled = false;
+    }
+  };
 
   /**
    * Обработка отправки формы кадрирования. Если форма валидна, экспортирует
@@ -245,8 +260,6 @@
 
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
-    } else {
-      resizeButton.disabled = true;
     }
   };
 
