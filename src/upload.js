@@ -42,6 +42,14 @@
   var currentResizer;
 
   /**
+  Находим поля формы
+  **/
+  var resizeLeft = document.querySelector('#resize-x');
+  var resizeTop = document.querySelector('#resize-y');
+  var resizeSide = document.querySelector('#resize-size');
+  var resizeButton = document.querySelector('#resize-fwd');
+
+  /**
    * Удаляет текущий объект {@link Resizer}, чтобы создать новый с другим
    * изображением.
    */
@@ -71,13 +79,8 @@
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
-  function resizeFormIsValid(resizer) {
-    if(resizeLeft.value + resizeSide.value > resizer._image.naturalWidth ||
-    resizeTop.value + resizeSide.value > resizer._image.naturalHeight) {
-      return false;
-    } else {
-      return true;
-    }
+  function resizeFormIsValid() {
+    return true;
   }
 
   /**
@@ -165,7 +168,6 @@
           resizeForm.classList.remove('invisible');
 
           setValues();
-          console.log(setValues());
 
           hideMessage();
         };
@@ -195,12 +197,8 @@
   };
 
   /**
-  Начальные значения в форме после загрузки изображения
-  **/
-  var resizeLeft = document.querySelector('#resize-x');
-  var resizeTop = document.querySelector('#resize-y');
-  var resizeSide = document.querySelector('#resize-size');
-  var resizeButton = document.querySelector('#resize-fwd');
+   * Установка начальных значений в формы
+   */
 
   var setValues = function() {
     var imageWidth = currentResizer._image.naturalWidth;
@@ -233,10 +231,8 @@
 
     if(x > imageWidth || y > imageHeight) {
       resizeButton.disabled = true;
-      // console.log('disabled_true');
     } else if(x <= imageWidth || y <= imageHeight) {
       resizeButton.disabled = false;
-      // console.log('disabled_false');
     }
   };
 
