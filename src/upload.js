@@ -233,10 +233,10 @@
 
     if(x > imageWidth || y > imageHeight) {
       resizeButton.disabled = true;
-      console.log('disabled_true');
+      // console.log('disabled_true');
     } else if(x <= imageWidth || y <= imageHeight) {
       resizeButton.disabled = false;
-      console.log('disabled_false');
+      // console.log('disabled_false');
     }
   };
 
