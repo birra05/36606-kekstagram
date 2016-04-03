@@ -226,8 +226,8 @@
   resizeForm.oninput = function() {
     var imageWidth = currentResizer._image.naturalWidth;
     var imageHeight = currentResizer._image.naturalHeight;
-    var x = +resizeLeft.value + +resizeSide.value;
-    var y = +resizeTop.value + +resizeSide.value;
+    var x = parseFloat(resizeLeft.value) + parseFloat(resizeSide.value);
+    var y = parseFloat(resizeTop.value) + parseFloat(resizeSide.value);
 
     if(x > imageWidth || y > imageHeight) {
       resizeButton.disabled = true;
