@@ -42,6 +42,14 @@
   var currentResizer;
 
   /**
+  Находим поля формы
+  **/
+  var resizeLeft = document.querySelector('#resize-x');
+  var resizeTop = document.querySelector('#resize-y');
+  var resizeSide = document.querySelector('#resize-size');
+  var resizeButton = document.querySelector('#resize-fwd');
+
+  /**
    * Удаляет текущий объект {@link Resizer}, чтобы создать новый с другим
    * изображением.
    */
@@ -159,6 +167,8 @@
           uploadForm.classList.add('invisible');
           resizeForm.classList.remove('invisible');
 
+          setValues();
+
           hideMessage();
         };
 
@@ -184,6 +194,46 @@
 
     resizeForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
+  };
+
+  /**
+   * Установка начальных значений в формы
+   */
+
+  var setValues = function() {
+    var imageWidth = currentResizer._image.naturalWidth;
+    var imageHeight = currentResizer._image.naturalHeight;
+
+    resizeLeft.value = 0;
+    resizeTop.value = 0;
+    resizeSide.value = Math.min(imageWidth, imageHeight);
+
+    resizeLeft.min = 0;
+    resizeTop.min = 0;
+    resizeSide.min = 0;
+
+    resizeLeft.max = imageWidth;
+    resizeTop.max = imageHeight;
+    resizeSide.max = resizeSide.value;
+
+    resizeButton.disabled = false;
+  };
+
+  /**
+   * Проверка вводимых значений
+   */
+
+  resizeForm.oninput = function() {
+    var imageWidth = currentResizer._image.naturalWidth;
+    var imageHeight = currentResizer._image.naturalHeight;
+    var x = parseFloat(resizeLeft.value) + parseFloat(resizeSide.value);
+    var y = parseFloat(resizeTop.value) + parseFloat(resizeSide.value);
+
+    if(x > imageWidth || y > imageHeight) {
+      resizeButton.disabled = true;
+    } else if(x <= imageWidth || y <= imageHeight) {
+      resizeButton.disabled = false;
+    }
   };
 
   /**
