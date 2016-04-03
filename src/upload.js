@@ -228,22 +228,15 @@
   resizeForm.oninput = function() {
     var imageWidth = currentResizer._image.naturalWidth;
     var imageHeight = currentResizer._image.naturalHeight;
-
     var x = +resizeLeft.value + +resizeSide.value;
     var y = +resizeTop.value + +resizeSide.value;
 
-    if(x > imageWidth) {
-      console.log('testXtrue');
+    if(x > imageWidth || y > imageHeight) {
       resizeButton.disabled = true;
-    } else if(y > imageHeight) {
-      console.log('testYtrue');
-      resizeButton.disabled = true;
-    } else if (x <= imageWidth) {
-      console.log('testXfalse');
+      console.log('disabled_true');
+    } else if(x <= imageWidth || y <= imageHeight) {
       resizeButton.disabled = false;
-    } else {
-      console.log('testYfalse');
-      resizeButton.disabled = false;
+      console.log('disabled_false');
     }
   };
 
