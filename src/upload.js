@@ -42,8 +42,13 @@
   var currentResizer;
 
   /**
+   * Подключаем библиотеку browser-cookies
+   */
+  // var browserCookies = require('browser-cookies');
+
+  /**
   Находим поля формы
-  **/
+  */
   var resizeLeft = document.querySelector('#resize-x');
   var resizeTop = document.querySelector('#resize-y');
   var resizeSide = document.querySelector('#resize-size');
@@ -276,6 +281,14 @@
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
+
+    // Cookies
+    var nowDate = new Date();
+    var lastBirthDate = new Date(nowDate.getFullYear() - 1, 10, 5);
+
+    var dateToExpire = Date.now() + (nowDate - lastBirthDate);
+    var formattedDateToExpire = new Date(dateToExpire).toUTCString();
+    console.log(formattedDateToExpire);
   };
 
   /**
