@@ -8,6 +8,11 @@
 'use strict';
 
 (function() {
+  /**
+   * Подключаем библиотеку browser-cookies
+   */
+  var browserCookies = require('browser-cookies');
+
   /** @enum {string} */
   var FileType = {
     'GIF': '',
@@ -42,17 +47,22 @@
   var currentResizer;
 
   /**
-   * Подключаем библиотеку browser-cookies
-   */
-  // var browserCookies = require('browser-cookies');
-
-  /**
   Находим поля формы
   */
   var resizeLeft = document.querySelector('#resize-x');
   var resizeTop = document.querySelector('#resize-y');
   var resizeSide = document.querySelector('#resize-size');
   var resizeButton = document.querySelector('#resize-fwd');
+
+  /**
+  Определяем, какой фильтр будет выбран для изображения по умолчанию
+  */
+
+  var setFilter = function() {
+    var filter = browserCookies.get('filter') || 'none';
+    filterImage.classList.add(filter);
+    console.log('test');
+  };
 
   /**
    * Удаляет текущий объект {@link Resizer}, чтобы создать новый с другим
@@ -254,6 +264,8 @@
 
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
+
+      setFilter();
     }
   };
 
@@ -266,29 +278,6 @@
 
     filterForm.classList.add('invisible');
     resizeForm.classList.remove('invisible');
-  };
-
-  /**
-   * Отправка формы фильтра. Возвращает в начальное состояние, предварительно
-   * записав сохраненный фильтр в cookie.
-   * @param {Event} evt
-   */
-  filterForm.onsubmit = function(evt) {
-    evt.preventDefault();
-
-    cleanupResizer();
-    updateBackground();
-
-    filterForm.classList.add('invisible');
-    uploadForm.classList.remove('invisible');
-
-    // Cookies
-    var nowDate = new Date();
-    var lastBirthDate = new Date(nowDate.getFullYear() - 1, 10, 5);
-
-    var dateToExpire = Date.now() + (nowDate - lastBirthDate);
-    var formattedDateToExpire = new Date(dateToExpire).toUTCString();
-    console.log(formattedDateToExpire);
   };
 
   /**
@@ -310,11 +299,43 @@
     var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
+    console.log(selectedFilter);
 
     // Класс перезаписывается, а не обновляется через classList потому что нужно
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
+  };
+
+  /**
+   * Отправка формы фильтра. Возвращает в начальное состояние, предварительно
+   * записав сохраненный фильтр в cookie.
+   * @param {Event} evt
+   */
+  filterForm.onsubmit = function(evt) {
+    evt.preventDefault();
+
+    cleanupResizer();
+    updateBackground();
+
+    filterForm.classList.add('invisible');
+    uploadForm.classList.remove('invisible');
+
+    // Cookies
+    var nowDate = new Date();
+    // День рождения - 5 ноября
+    var lastBirthDate = new Date(nowDate.getFullYear() - 1, 10, 5);
+
+    var dateToExpire = Date.now() + (nowDate - lastBirthDate);
+    var formattedDateToExpire = new Date(dateToExpire).toUTCString();
+    console.log('что-то происходит при отправке формы', formattedDateToExpire);
+
+    // Пришлось скопировать
+    var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
+      return item.checked;
+    })[0].value;
+
+    browserCookies.set('filter', selectedFilter);
   };
 
   cleanupResizer();
