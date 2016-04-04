@@ -61,6 +61,7 @@
   var setFilter = function() {
     var filter = browserCookies.get('filter') || 'none';
     filterImage.classList.add('filter-' + filter);
+    document.getElementById('upload-filter-' + filter).checked = true;
   };
 
   /**
