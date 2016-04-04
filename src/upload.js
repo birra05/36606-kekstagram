@@ -4,10 +4,10 @@
  * @fileoverview
  * @author Igor Alexeenko (o0)
  */
-
 'use strict';
 
 (function() {
+
   /**
    * Подключаем библиотеку browser-cookies
    */
@@ -60,8 +60,8 @@
 
   var setFilter = function() {
     var filter = browserCookies.get('filter') || 'none';
-    filterImage.classList.add(filter);
-    console.log('test');
+    filterImage.classList.add('filter-' + filter);
+    console.log('фильтр поставлен');
   };
 
   /**
@@ -296,15 +296,15 @@
       };
     }
 
-    var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
+    this.selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
-    console.log(selectedFilter);
+    console.log(this.selectedFilter);
 
     // Класс перезаписывается, а не обновляется через classList потому что нужно
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
     // состояние или просто перезаписывать.
-    filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
+    filterImage.className = 'filter-image-preview ' + filterMap[this.selectedFilter];
   };
 
   /**
@@ -328,14 +328,14 @@
 
     var dateToExpire = Date.now() + (nowDate - lastBirthDate);
     var formattedDateToExpire = new Date(dateToExpire).toUTCString();
-    console.log('что-то происходит при отправке формы', formattedDateToExpire);
+    console.log(formattedDateToExpire);
 
     // Пришлось скопировать
-    var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
-      return item.checked;
-    })[0].value;
+    // var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
+    //   return item.checked;
+    // })[0].value;
 
-    browserCookies.set('filter', selectedFilter);
+    browserCookies.set('filter', this.selectedFilter, formattedDateToExpire);
   };
 
   cleanupResizer();
