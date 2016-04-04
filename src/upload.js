@@ -55,13 +55,12 @@
   var resizeButton = document.querySelector('#resize-fwd');
 
   /**
-  Определяем, какой фильтр будет выбран для изображения по умолчанию
+  Определяем, какой фильтр будет выбран для изображения по умолчанию, берем значение из куки
   */
 
   var setFilter = function() {
     var filter = browserCookies.get('filter') || 'none';
     filterImage.classList.add('filter-' + filter);
-    console.log('фильтр поставлен');
   };
 
   /**
@@ -299,7 +298,6 @@
     this.selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
-    console.log(this.selectedFilter);
 
     // Класс перезаписывается, а не обновляется через classList потому что нужно
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
@@ -324,18 +322,22 @@
     // Cookies
     var nowDate = new Date();
     // День рождения - 5 ноября
-    var lastBirthDate = new Date(nowDate.getFullYear() - 1, 10, 5);
+    var birthDate = new Date(nowDate.getFullYear(), 10, 5);
+    var lastBirthDate;
+    var dateToExpire;
+    var formattedDateToExpire;
 
-    var dateToExpire = Date.now() + (nowDate - lastBirthDate);
-    var formattedDateToExpire = new Date(dateToExpire).toUTCString();
-    console.log(formattedDateToExpire);
+    if(nowDate - birthDate >= 0) {
+      lastBirthDate = new Date(nowDate.getFullYear(), 10, 5);
+      dateToExpire = Date.now() + (nowDate - lastBirthDate);
+      formattedDateToExpire = new Date(dateToExpire).toUTCString();
+    } else {
+      lastBirthDate = new Date(nowDate.getFullYear() - 1, 10, 5);
+      dateToExpire = Date.now() + (nowDate - lastBirthDate);
+      formattedDateToExpire = new Date(dateToExpire).toUTCString();
+    }
 
-    // Пришлось скопировать
-    // var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
-    //   return item.checked;
-    // })[0].value;
-
-    browserCookies.set('filter', this.selectedFilter, formattedDateToExpire);
+    browserCookies.set('filter', this.selectedFilter, {expires: formattedDateToExpire});
   };
 
   cleanupResizer();
