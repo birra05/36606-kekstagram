@@ -30,6 +30,8 @@
 
     // Обработчик загрузки
     pictureImage.onload = function() {
+      // Отмена таймаута
+      clearTimeout(imageLoadTimeout);
       image.src = data.url;
       image.width = '182';
       image.height = '182';
@@ -41,6 +43,12 @@
     };
 
     pictureImage.src = data.url;
+
+    // Таймаут
+    var imageLoadTimeout = setTimeout(function() {
+      image.src = '';
+      image.classList.add('picture-load-failure');
+    }, 5000);
 
     container.appendChild(element);
     return element;
