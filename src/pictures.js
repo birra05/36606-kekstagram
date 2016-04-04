@@ -40,7 +40,7 @@
       image.classList.add('picture-load-failure');
     };
 
-    // pictureImage.src = data.url;
+    pictureImage.src = data.url;
 
     container.appendChild(element);
     return element;
