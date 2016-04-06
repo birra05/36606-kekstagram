@@ -1,5 +1,3 @@
-/* global pictures */
-
 'use strict';
 
 (function() {
@@ -8,7 +6,9 @@
 
   var picturesContainer = document.querySelector('.pictures');
   var templateElement = document.querySelector('#picture-template');
+  var pictures = window.pictures;
   var elementToClone;
+  var LOAD_URL = '//o0.github.io/assets/json/pictures.json';
 
   // Для IE
   if ('content' in templateElement) {
@@ -54,9 +54,28 @@
     return element;
   };
 
-  // Проходим по массиву
-  pictures.forEach(function(picture) {
-    getPictureElement(picture, picturesContainer);
+  // Загружаем данные из файла по XMLHttpRequest
+  var getPictures = function(callback) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.onload = function(evt) {
+      var loadedData = JSON.parse(evt.target.response);
+      callback(loadedData);
+    };
+
+    xhr.open('GET', LOAD_URL);
+    xhr.send();
+  };
+
+  var renderPictures = function() {
+    pictures.forEach(function(picture) {
+      getPictureElement(picture, picturesContainer);
+    });
+  };
+
+  getPictures(function(loadedPictures) {
+    pictures = loadedPictures;
+    renderPictures(pictures);
   });
 
   // После загрузки всех данных показать блок с фильтрами
