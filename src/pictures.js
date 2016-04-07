@@ -6,7 +6,7 @@
 
   var picturesContainer = document.querySelector('.pictures');
   var templateElement = document.querySelector('#picture-template');
-  var pictures = window.pictures;
+  var pictures = [];
   var elementToClone;
   var LOAD_URL = '//o0.github.io/assets/json/pictures.json';
 
@@ -80,5 +80,4 @@
 
   // После загрузки всех данных показать блок с фильтрами
   document.querySelector('.filters').classList.remove('hidden');
-
 })();
