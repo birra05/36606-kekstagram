@@ -1,14 +1,16 @@
 'use strict';
 
 (function() {
-  // Спрятать блок с фильтрами
-  document.querySelector('.filters').classList.add('hidden');
 
   var picturesContainer = document.querySelector('.pictures');
   var templateElement = document.querySelector('#picture-template');
+  var filters = document.querySelector('.filters');
   var pictures = [];
   var elementToClone;
   var LOAD_URL = '//o0.github.io/assets/json/pictures.json';
+
+  // Спрятать блок с фильтрами
+  filters.classList.add('hidden');
 
   // Для IE
   if ('content' in templateElement) {
@@ -73,11 +75,38 @@
     });
   };
 
+  var getFilteredPictures = function(pictures, filter) {
+    var picturesToFilter = pictures.slice(0);
+
+    // switch(filter) {
+    //   case ''
+    // }
+
+    return picturesToFilter;
+  };
+
+  var setFilterEnabled = function(filter) {
+    var filteredPictures = getFilteredPictures(pictures, filter);
+    renderPictures(filteredPictures);
+
+    var activeFilter = document.getElementsByName('filter').checked;
+    console.log(activeFilter);
+  };
+
+  var setFiltrationEnabled = function() {
+    for(var i = 0; i < filters.length; i++) {
+      filters[i].onclick = function() {
+        setFilterEnabled(this.id);
+      };
+    }
+  };
+
   getPictures(function(loadedPictures) {
     pictures = loadedPictures;
+    setFiltrationEnabled();
     renderPictures(pictures);
   });
 
   // После загрузки всех данных показать блок с фильтрами
-  document.querySelector('.filters').classList.remove('hidden');
+  filters.classList.remove('hidden');
 })();
