@@ -5,7 +5,7 @@
   var picturesContainer = document.querySelector('.pictures');
   var templateElement = document.querySelector('#picture-template');
   var filters = document.querySelector('.filters');
-  var pictures = [];
+  var pics = [];
   var elementToClone;
   var LOAD_URL = '//o0.github.io/assets/json/pictures.json';
 
@@ -37,6 +37,7 @@
       image.src = data.url;
       image.width = '182';
       image.height = '182';
+      image.alt = data.date;
     };
 
     // Обработчик ошибки
@@ -62,15 +63,29 @@
 
     xhr.onload = function(evt) {
       var loadedData = JSON.parse(evt.target.response);
+      picturesContainer.classList.add('pictures-loading');
       callback(loadedData);
+    };
+
+    // Обработчики ошибки и таймаута
+    xhr.onerror = function() {
+      picturesContainer.classList.add('pictures-failure');
+    };
+
+    xhr.timeout = 5000;
+    xhr.ontimeout = function() {
+      picturesContainer.classList.add('pictures-failure');
     };
 
     xhr.open('GET', LOAD_URL);
     xhr.send();
   };
 
+  // Отрисовка каждой картинки
   var renderPictures = function() {
-    pictures.forEach(function(picture) {
+    picturesContainer.innerHTML = '';
+
+    pics.forEach(function(picture) {
       getPictureElement(picture, picturesContainer);
     });
   };
@@ -78,19 +93,33 @@
   var getFilteredPictures = function(pictures, filter) {
     var picturesToFilter = pictures.slice(0);
 
-    // switch(filter) {
-    //   case ''
-    // }
-
+    switch(filter) {
+      case 'filter-popular':
+        break;
+      // Фильтр Новые — список фотографий, сделанных за последние две недели, отсортированные по убыванию даты (поле date)
+      case 'filter-new':
+        picturesToFilter.filter(function(elem) {
+          var dateTwoWeeksAgo = new Date(elem.date);
+          var nowDate = new Date();
+          return dateTwoWeeksAgo > nowDate - 14 * 24 * 60 * 60 * 1000;
+        });
+        picturesToFilter.sort(function(a, b) {
+          return b.date - a.date;
+        });
+        break;
+      // Фильтр Обсуждаемые — отсортированные по убыванию количества комментариев (поле comments)
+      case 'filter-discussed':
+        picturesToFilter.sort(function(a, b) {
+          return b.comments - a.comments;
+        });
+        break;
+    }
     return picturesToFilter;
   };
 
   var setFilterEnabled = function(filter) {
-    var filteredPictures = getFilteredPictures(pictures, filter);
+    var filteredPictures = getFilteredPictures(pics, filter);
     renderPictures(filteredPictures);
-
-    var activeFilter = document.getElementsByName('filter').checked;
-    console.log(activeFilter);
   };
 
   var setFiltrationEnabled = function() {
@@ -102,9 +131,10 @@
   };
 
   getPictures(function(loadedPictures) {
-    pictures = loadedPictures;
+    pics = loadedPictures;
     setFiltrationEnabled();
-    renderPictures(pictures);
+    setFilterEnabled('filter-popular');
+    picturesContainer.classList.remove('pictures-loading');
   });
 
   // После загрузки всех данных показать блок с фильтрами
