@@ -82,10 +82,10 @@
   };
 
   // Отрисовка каждой картинки
-  var renderPictures = function() {
+  var renderPictures = function(pictures) {
     picturesContainer.innerHTML = '';
 
-    pics.forEach(function(picture) {
+    pictures.forEach(function(picture) {
       getPictureElement(picture, picturesContainer);
     });
   };
@@ -98,18 +98,18 @@
         break;
       // Фильтр Новые — список фотографий, сделанных за последние две недели, отсортированные по убыванию даты (поле date)
       case 'filter-new':
-        picturesToFilter.filter(function(elem) {
+        picturesToFilter = picturesToFilter.filter(function(elem) {
           var dateTwoWeeksAgo = new Date(elem.date);
           var nowDate = new Date();
           return dateTwoWeeksAgo > nowDate - 14 * 24 * 60 * 60 * 1000;
         });
-        picturesToFilter.sort(function(a, b) {
-          return b.date - a.date;
+        picturesToFilter = picturesToFilter.sort(function(a, b) {
+          return new Date(b.date) - new Date(a.date);
         });
         break;
       // Фильтр Обсуждаемые — отсортированные по убыванию количества комментариев (поле comments)
       case 'filter-discussed':
-        picturesToFilter.sort(function(a, b) {
+        picturesToFilter = picturesToFilter.sort(function(a, b) {
           return b.comments - a.comments;
         });
         break;
@@ -123,11 +123,11 @@
   };
 
   var setFiltrationEnabled = function() {
-    for(var i = 0; i < filters.length; i++) {
-      filters[i].onclick = function() {
+    [].forEach.call(filters, function(filter) {
+      filter.onclick = function() {
         setFilterEnabled(this.id);
       };
-    }
+    });
   };
 
   getPictures(function(loadedPictures) {
