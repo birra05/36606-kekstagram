@@ -6,8 +6,11 @@
   var templateElement = document.querySelector('#picture-template');
   var filters = document.querySelector('.filters');
   var pics = [];
+  var filteredPictures = [];
   var elementToClone;
   var LOAD_URL = '//o0.github.io/assets/json/pictures.json';
+  var PAGE_SIZE = 12;
+  var pageNumber = 0;
 
   // Спрятать блок с фильтрами
   filters.classList.add('hidden');
@@ -57,35 +60,16 @@
     return element;
   };
 
-  // Загружаем данные из файла по XMLHttpRequest
-  var getPictures = function(callback) {
-    var xhr = new XMLHttpRequest();
-
-    xhr.onload = function(evt) {
-      var loadedData = JSON.parse(evt.target.response);
-      picturesContainer.classList.add('pictures-loading');
-      callback(loadedData);
-    };
-
-    // Обработчики ошибки и таймаута
-    xhr.onerror = function() {
-      picturesContainer.classList.add('pictures-failure');
-    };
-
-    xhr.timeout = 5000;
-    xhr.ontimeout = function() {
-      picturesContainer.classList.add('pictures-failure');
-    };
-
-    xhr.open('GET', LOAD_URL);
-    xhr.send();
-  };
-
   // Отрисовка каждой картинки
-  var renderPictures = function(pictures) {
-    picturesContainer.innerHTML = '';
+  var renderPictures = function(pictures, page, replace) {
+    if(replace) {
+      picturesContainer.innerHTML = '';
+    }
 
-    pictures.forEach(function(picture) {
+    var from = page * PAGE_SIZE;
+    var to = from + PAGE_SIZE;
+
+    pictures.slice(from, to).forEach(function(picture) {
       getPictureElement(picture, picturesContainer);
     });
   };
@@ -118,8 +102,9 @@
   };
 
   var setFilterEnabled = function(filter) {
-    var filteredPictures = getFilteredPictures(pics, filter);
-    renderPictures(filteredPictures);
+    filteredPictures = getFilteredPictures(pics, filter);
+    pageNumber = 0;
+    renderPictures(filteredPictures, pageNumber, true);
   };
 
   var setFiltrationEnabled = function() {
@@ -130,10 +115,58 @@
     });
   };
 
+  // Загружаем данные из файла по XMLHttpRequest
+  var getPictures = function(callback) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.onload = function(evt) {
+      var loadedData = JSON.parse(evt.target.response);
+      picturesContainer.classList.add('pictures-loading');
+      callback(loadedData);
+    };
+
+    // Обработчики ошибки и таймаута
+    xhr.onerror = function() {
+      picturesContainer.classList.add('pictures-failure');
+    };
+
+    xhr.timeout = 5000;
+    xhr.ontimeout = function() {
+      picturesContainer.classList.add('pictures-failure');
+    };
+
+    xhr.open('GET', LOAD_URL);
+    xhr.send();
+  };
+
+  var isBottomReached = function() {
+    var containerSides = picturesContainer.getBoundingClientRect();
+    if(containerSides.top <= 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  var isNextPageAvailable = function(pictures, page, pageSize) {
+    return page < Math.floor(filteredPictures.length / pageSize);
+  };
+
+  var setScrollEnabled = function() {
+    var pictures;
+    window.addEventListener('scroll', function() {
+      if (isBottomReached() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+        pageNumber++;
+        renderPictures(filteredPictures, pageNumber);
+      }
+    });
+  };
+
   getPictures(function(loadedPictures) {
     pics = loadedPictures;
     setFiltrationEnabled();
     setFilterEnabled('filter-popular');
+    setScrollEnabled();
     picturesContainer.classList.remove('pictures-loading');
   });
 
