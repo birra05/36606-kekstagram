@@ -108,10 +108,11 @@
   };
 
   var setFiltrationEnabled = function() {
-    [].forEach.call(filters, function(filter) {
-      filter.onclick = function() {
-        setFilterEnabled(this.id);
-      };
+    // Делегирование
+    filters.addEventListener('click', function(evt) {
+      if (evt.target.classList.contains('filters-radio')) {
+        setFilterEnabled(evt.target.id);
+      }
     });
   };
 
@@ -152,18 +153,26 @@
     return page < Math.floor(filteredPictures.length / pageSize);
   };
 
+  // Обработчик события scroll у объекта window, который отображает следующую страницу
+  // с фотографиями по достижении низа страницы
   var setScrollEnabled = function() {
+    var scrollTimeout;
     var pictures;
     window.addEventListener('scroll', function() {
-      if (isBottomReached() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
-        pageNumber++;
-        renderPictures(filteredPictures, pageNumber);
-      }
+      // Оптмимизация скролла
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(function() {
+        if (isBottomReached() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+          pageNumber++;
+          renderPictures(filteredPictures, pageNumber);
+        }
+      }, 100);
     });
   };
 
   getPictures(function(loadedPictures) {
     pics = loadedPictures;
+
     setFiltrationEnabled();
     setFilterEnabled('filter-popular');
     setScrollEnabled();
