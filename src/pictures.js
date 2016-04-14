@@ -3,6 +3,7 @@
 (function() {
 
   var picturesContainer = document.querySelector('.pictures');
+  var containerSides = picturesContainer.getBoundingClientRect();
   var templateElement = document.querySelector('#picture-template');
   var filters = document.querySelector('.filters');
   var pics = [];
@@ -60,6 +61,14 @@
     return element;
   };
 
+  var isBottomReached = function() {
+    return containerSides.top - window.innerHeight <= 0;
+  };
+
+  var isNextPageAvailable = function(pictures, page, pageSize) {
+    return page < Math.floor(filteredPictures.length / pageSize);
+  };
+
   // Отрисовка каждой картинки
   var renderPictures = function(pictures, page, replace) {
     if(replace) {
@@ -72,6 +81,17 @@
     pictures.slice(from, to).forEach(function(picture) {
       getPictureElement(picture, picturesContainer);
     });
+
+    var renderNextPages = function() {
+      var picturesContainerHeight = parseFloat(getComputedStyle(picturesContainer).height);
+
+      while (window.innerHeight - picturesContainerHeight > 0 && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+        pageNumber++;
+        renderPictures(filteredPictures, pageNumber);
+      }
+    };
+
+    renderNextPages();
   };
 
   var getFilteredPictures = function(pictures, filter) {
@@ -140,29 +160,16 @@
     xhr.send();
   };
 
-  var isBottomReached = function() {
-    var containerSides = picturesContainer.getBoundingClientRect();
-    if(containerSides.top <= 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  var isNextPageAvailable = function(pictures, page, pageSize) {
-    return page < Math.floor(filteredPictures.length / pageSize);
-  };
-
   // Обработчик события scroll у объекта window, который отображает следующую страницу
   // с фотографиями по достижении низа страницы
   var setScrollEnabled = function() {
-    var scrollTimeout;
     var pictures;
+    var scrollTimeout;
     window.addEventListener('scroll', function() {
       // Оптмимизация скролла
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(function() {
-        if (isBottomReached() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+        while(isBottomReached() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
           pageNumber++;
           renderPictures(filteredPictures, pageNumber);
         }
