@@ -82,10 +82,16 @@
       getPictureElement(picture, picturesContainer);
     });
 
-    var renderNextPages = function() {
-      var picturesContainerHeight = parseFloat(getComputedStyle(picturesContainer).height);
+    // Отрисовать все фото на экране с большим разрешением
 
-      while (window.innerHeight - picturesContainerHeight > 0 && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+    var picturesContainerHeight = parseFloat(getComputedStyle(picturesContainer).height);
+
+    var blockIsNotFull = function() {
+      return window.innerHeight - picturesContainerHeight > 0;
+    };
+
+    var renderNextPages = function() {
+      while (blockIsNotFull() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
         pageNumber++;
         renderPictures(filteredPictures, pageNumber);
       }
