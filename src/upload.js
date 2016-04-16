@@ -221,10 +221,6 @@
     var imageWidth = currentResizer._image.naturalWidth;
     var imageHeight = currentResizer._image.naturalHeight;
 
-    resizeLeft.value = 0;
-    resizeTop.value = 0;
-    resizeSide.value = Math.min(imageWidth, imageHeight);
-
     resizeLeft.min = 0;
     resizeTop.min = 0;
     resizeSide.min = 0;
@@ -251,6 +247,8 @@
     } else if(x <= imageWidth || y <= imageHeight) {
       resizeButton.disabled = false;
     }
+
+    currentResizer.setConstraint(+resizeLeft.value, +resizeTop.value, +resizeSide.value);
   });
 
   /**
@@ -345,6 +343,16 @@
     }
 
     browserCookies.set('filter', this.selectedFilter, {expires: formattedDateToExpire});
+  });
+
+  var syncFormAndResizer = function() {
+    resizeLeft.value = Math.floor(currentResizer.getConstraint().x);
+    resizeTop.value = Math.floor(currentResizer.getConstraint().y);
+    resizeSide.value = Math.floor(currentResizer.getConstraint().side);
+  };
+
+  window.addEventListener('resizerchange', function() {
+    syncFormAndResizer();
   });
 
   cleanupResizer();
