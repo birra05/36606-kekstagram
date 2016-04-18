@@ -1,9 +1,8 @@
 'use strict';
 
-require('./pictures');
+var picturesFile = require('./pictures');
 
 var filters = document.querySelector('.filters');
-module.exports = filters;
 
 // Спрятать блок с фильтрами
 filters.classList.add('hidden');
@@ -36,35 +35,27 @@ var getFilteredPictures = function(pictures, filter) {
   return picturesToFilter;
 };
 
+var setFilterEnabled = function(filter, loadedPictures) {
+  picturesFile.filteredPictures = getFilteredPictures(loadedPictures, filter);
+  picturesFile.pageNumber = 0;
+  picturesFile.renderPictures(picturesFile.filteredPictures, picturesFile.pageNumber, true);
+};
+
 module.exports = {
+  filters: document.querySelector('.filters'),
 
   setFilterEnabled: function(filter) {
-    filteredPictures = getFilteredPictures(pics, filter);
-    pageNumber = 0;
-    renderPictures(filteredPictures, pageNumber, true);
+    picturesFile.filteredPictures = getFilteredPictures(picturesFile.pics, filter);
+    picturesFile.pageNumber = 0;
+    picturesFile.renderPictures(picturesFile.filteredPictures, picturesFile.pageNumber, true);
   },
 
   setFiltrationEnabled: function() {
     // Делегирование
     filters.addEventListener('click', function(evt) {
       if (evt.target.classList.contains('filters-radio')) {
-        module.exports.setFilterEnabled(evt.target.id);
+        setFilterEnabled(evt.target.id);
       }
     });
   }
 };
-
-// var setFilterEnabled = function(filter) {
-//   filteredPictures = getFilteredPictures(pics, filter);
-//   pageNumber = 0;
-//   renderPictures(filteredPictures, pageNumber, true);
-// };
-
-// var setFiltrationEnabled = function() {
-//   // Делегирование
-//   filters.addEventListener('click', function(evt) {
-//     if (evt.target.classList.contains('filters-radio')) {
-//       setFilterEnabled(evt.target.id);
-//     }
-//   });
-// };

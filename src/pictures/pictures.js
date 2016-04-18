@@ -1,13 +1,10 @@
 'use strict';
 
-// (function() {
-var filter = require('./filters');
-var filters = require('./filters');
+var filtersFile = require('./filters');
 
 var picturesContainer = document.querySelector('.pictures');
 var containerSides = picturesContainer.getBoundingClientRect();
 var templateElement = document.querySelector('#picture-template');
-var pics = [];
 var filteredPictures = [];
 var elementToClone;
 var LOAD_URL = '//o0.github.io/assets/json/pictures.json';
@@ -139,15 +136,50 @@ var setScrollEnabled = function() {
   });
 };
 
-getPictures(function(loadedPictures) {
-  pics = loadedPictures;
+getPictures(function() {
+  // pics = loadedPictures;
 
-  filter.setFiltrationEnabled();
-  filter.setFilterEnabled('filter-popular');
+  filtersFile.setFiltrationEnabled();
+  filtersFile.setFilterEnabled('filter-popular');
   setScrollEnabled();
   picturesContainer.classList.remove('pictures-loading');
 });
 
 // После загрузки всех данных показать блок с фильтрами
-filters.classList.remove('hidden');
-// })();
+filtersFile.filters.classList.remove('hidden');
+
+module.exports = {
+  pics: [],
+  filteredPictures: [],
+  pageNumber: 0,
+
+  renderPictures: function(pictures, page, replace) {
+    if(replace) {
+      picturesContainer.innerHTML = '';
+    }
+
+    var from = page * PAGE_SIZE;
+    var to = from + PAGE_SIZE;
+
+    pictures.slice(from, to).forEach(function(picture) {
+      getPictureElement(picture, picturesContainer);
+    });
+
+    // Отрисовать все фото на экране с большим разрешением
+
+    var picturesContainerHeight = parseFloat(getComputedStyle(picturesContainer).height);
+
+    var blockIsNotFull = function() {
+      return window.innerHeight - picturesContainerHeight > 0;
+    };
+
+    var renderNextPages = function() {
+      while (blockIsNotFull() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+        pageNumber++;
+        renderPictures(filteredPictures, pageNumber);
+      }
+    };
+
+    renderNextPages();
+  }
+};
