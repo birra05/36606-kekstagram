@@ -5,6 +5,7 @@ var filtersFile = require('./filters');
 var picturesContainer = document.querySelector('.pictures');
 var containerSides = picturesContainer.getBoundingClientRect();
 var templateElement = document.querySelector('#picture-template');
+var pics = [];
 var filteredPictures = [];
 var elementToClone;
 var LOAD_URL = '//o0.github.io/assets/json/pictures.json';
@@ -95,6 +96,21 @@ var renderPictures = function(pictures, page, replace) {
   renderNextPages();
 };
 
+var setFilterEnabled = function(filter) {
+  filteredPictures = filtersFile.getFilteredPictures(pics, filter);
+  pageNumber = 0;
+  renderPictures(filteredPictures, pageNumber, true);
+};
+
+var setFiltrationEnabled = function() {
+  // Делегирование
+  filtersFile.filters.addEventListener('click', function(evt) {
+    if (evt.target.classList.contains('filters-radio')) {
+      setFilterEnabled(evt.target.id);
+    }
+  });
+};
+
 // Загружаем данные из файла по XMLHttpRequest
 var getPictures = function(callback) {
   var xhr = new XMLHttpRequest();
@@ -136,50 +152,11 @@ var setScrollEnabled = function() {
   });
 };
 
-getPictures(function() {
-  // pics = loadedPictures;
+getPictures(function(loadedPictures) {
+  pics = loadedPictures;
 
-  filtersFile.setFiltrationEnabled();
-  filtersFile.setFilterEnabled('filter-popular');
+  setFiltrationEnabled();
+  setFilterEnabled('filter-popular');
   setScrollEnabled();
   picturesContainer.classList.remove('pictures-loading');
 });
-
-// После загрузки всех данных показать блок с фильтрами
-filtersFile.filters.classList.remove('hidden');
-
-module.exports = {
-  pics: [],
-  filteredPictures: [],
-  pageNumber: 0,
-
-  renderPictures: function(pictures, page, replace) {
-    if(replace) {
-      picturesContainer.innerHTML = '';
-    }
-
-    var from = page * PAGE_SIZE;
-    var to = from + PAGE_SIZE;
-
-    pictures.slice(from, to).forEach(function(picture) {
-      getPictureElement(picture, picturesContainer);
-    });
-
-    // Отрисовать все фото на экране с большим разрешением
-
-    var picturesContainerHeight = parseFloat(getComputedStyle(picturesContainer).height);
-
-    var blockIsNotFull = function() {
-      return window.innerHeight - picturesContainerHeight > 0;
-    };
-
-    var renderNextPages = function() {
-      while (blockIsNotFull() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
-        pageNumber++;
-        renderPictures(filteredPictures, pageNumber);
-      }
-    };
-
-    renderNextPages();
-  }
-};
