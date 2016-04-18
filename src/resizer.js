@@ -170,7 +170,6 @@
             y = startY;
           }
           this._ctx.lineTo(x, y);
-          // console.log('верхняя линия x: ', x, 'верхняя линия y: ', y);
         }
       };
 
@@ -185,7 +184,6 @@
             x = startX;
           }
           this._ctx.lineTo(x + lineLength, y);
-          // console.log('правая линия x: ', x, 'правая линия y: ', y);
         }
       };
 
@@ -200,7 +198,6 @@
             y = startY + lineLength + zigzagSpacing;
           }
           this._ctx.lineTo(lineLength - lineWidth - x, y);
-          // console.log('нижняя линия x: ', x, 'нижняя линия y: ', y);
         }
       };
 
@@ -215,7 +212,6 @@
             x = startX + zigzagSpacing;
           }
           this._ctx.lineTo(x - zigzagSpacing, -y - lineWidth);
-          // console.log('левая линия x: ', x, 'левая линия y: ', y);
         }
       };
 
@@ -277,8 +273,6 @@
           this._ctx.arc(x, i, 3, 0, Math.PI * 2);
           this._ctx.closePath();
           this._ctx.fill();
-          // console.log('куда рисуется левая линия по y: ', y - lineLength - lineWidth);
-          // console.log('левая линия x: ', x, 'левая линия y: ', y);
         }
       };
 
@@ -286,8 +280,6 @@
       this.drawDottedRight();
       this.drawDottedBottom();
       this.drawDottedLeft();
-
-      // this._ctx.stroke();
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
