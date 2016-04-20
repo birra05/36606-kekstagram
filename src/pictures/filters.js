@@ -1,7 +1,7 @@
 'use strict';
 
-var renderFile = require('./render');
-var utilsFile = require('../utils');
+var renderModule = require('./render');
+var utilsModule = require('../utils');
 
 var filters = document.querySelector('.filters');
 
@@ -36,9 +36,9 @@ var getFilteredPictures = function(pictures, filter) {
 };
 
 var setFilterEnabled = function(filter) {
-  utilsFile.filteredPictures = getFilteredPictures(utilsFile.pics, filter);
-  utilsFile.pageNumber = 0;
-  renderFile.renderPictures(utilsFile.filteredPictures, utilsFile.pageNumber, true);
+  utilsModule.filteredPictures = getFilteredPictures(utilsModule.pics, filter);
+  utilsModule.pageNumber = 0;
+  renderModule.renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber, true);
 };
 
 // После загрузки всех данных показать блок с фильтрами
@@ -75,9 +75,9 @@ module.exports = {
   },
 
   setFilterEnabled: function(filter) {
-    utilsFile.filteredPictures = getFilteredPictures(utilsFile.pics, filter);
-    utilsFile.pageNumber = 0;
-    renderFile.renderPictures(utilsFile.filteredPictures, utilsFile.pageNumber, true);
+    utilsModule.filteredPictures = getFilteredPictures(utilsModule.pics, filter);
+    utilsModule.pageNumber = 0;
+    renderModule.renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber, true);
   },
 
   setFiltrationEnabled: function() {

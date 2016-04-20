@@ -1,7 +1,7 @@
 'use strict';
 
-var renderFile = require('./render');
-var utilsFile = require('../utils');
+var renderModule = require('./render');
+var utilsModule = require('../utils');
 
 module.exports = {
   // Обработчик события scroll у объекта window, который отображает следующую страницу
@@ -13,9 +13,8 @@ module.exports = {
       // Оптмимизация скролла
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(function() {
-        while(utilsFile.isBottomReached() && utilsFile.isNextPageAvailable(pictures, utilsFile.pageNumber, utilsFile.PAGE_SIZE)) {
-          utilsFile.pageNumber++;
-          renderFile.renderPictures(utilsFile.filteredPictures, utilsFile.pageNumber);
+        while(utilsModule.isBottomReached() && utilsModule.isNextPageAvailable(pictures, utilsModule.pageNumber, utilsModule.PAGE_SIZE)) {
+          renderModule.drawNextPages();
         }
       }, 100);
     });
