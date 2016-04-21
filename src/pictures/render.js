@@ -1,5 +1,6 @@
 'use strict';
 
+var galleryModule = require('../gallery/gallery');
 var utilsModule = require('../utils');
 
 var elementToClone;
@@ -45,6 +46,11 @@ var getPictureElement = function(data, container) {
     image.src = '';
     image.classList.add('picture-load-failure');
   }, 5000);
+
+  // Добавляем показ галереи по клику на элемент
+  element.addEventListener('click', function() {
+    galleryModule.showGallery(data.pictures);
+  });
 
   container.appendChild(element);
   return element;
