@@ -48,9 +48,10 @@ var getPictureElement = function(data, container) {
   }, 5000);
 
   // Добавляем показ галереи по клику на элемент
+  // Проверка вызова метода showGallery без параметров
   element.addEventListener('click', function(evt) {
     evt.preventDefault();
-    galleryModule.showGallery(data.pictures);
+    galleryModule.showGallery();
   });
 
   container.appendChild(element);
@@ -63,7 +64,7 @@ var drawNextPages = function() {
   renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber);
 };
 
-// Отрисовка каждой картинки
+// Отрисовка всех картинок
 var renderPictures = function(pictures, page, replace) {
   if(replace) {
     utilsModule.picturesContainer.innerHTML = '';
