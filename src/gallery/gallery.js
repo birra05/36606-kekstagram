@@ -8,18 +8,6 @@ var galleryImage = galleryContainer.querySelector('.gallery-overlay-image');
 
 var galleryPictures = [];
 
-var showGallery = function(pictures) {
-  galleryPictures = pictures;
-  galleryPictures.forEach(function(pic) {
-    var preview = new Image();
-    galleryImage.appendChild(preview);
-    preview.src = pic;
-  });
-  galleryContainer.classList.remove('.invisible');
-};
-
-showGallery();
-
 var hideGallery = function() {
   galleryContainer.classList.add('.invisible');
 };

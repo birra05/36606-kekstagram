@@ -48,7 +48,8 @@ var getPictureElement = function(data, container) {
   }, 5000);
 
   // Добавляем показ галереи по клику на элемент
-  element.addEventListener('click', function() {
+  element.addEventListener('click', function(evt) {
+    evt.preventDefault();
     galleryModule.showGallery(data.pictures);
   });
 
