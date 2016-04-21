@@ -51,7 +51,7 @@ var getPictureElement = function(data, container) {
   // Проверка вызова метода showGallery без параметров
   element.addEventListener('click', function(evt) {
     evt.preventDefault();
-    galleryModule.showGallery();
+    galleryModule.showGallery(data.pictures);
   });
 
   container.appendChild(element);
