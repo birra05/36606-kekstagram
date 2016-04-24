@@ -8,6 +8,7 @@ module.exports = {
   picturesContainer: document.querySelector('.pictures'),
   pics: [],
   filteredPictures: [],
+  IMAGE_SIZE: 182,
   pageNumber: 0,
   PAGE_SIZE: 12,
 

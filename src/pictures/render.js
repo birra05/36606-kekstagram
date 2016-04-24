@@ -29,8 +29,8 @@ var getPictureElement = function(data, container) {
     // Отмена таймаута
     clearTimeout(imageLoadTimeout);
     image.src = data.url;
-    image.width = '182';
-    image.height = '182';
+    image.width = utilsModule.IMAGE_SIZE;
+    image.height = utilsModule.IMAGE_SIZE;
     image.alt = data.date;
   };
 
@@ -47,18 +47,20 @@ var getPictureElement = function(data, container) {
     image.classList.add('picture-load-failure');
   }, 5000);
 
-  // Добавляем показ галереи по клику на элемент
+  var showGalleryPic = function() {
+    galleryModule.galleryImage.src = data.url;
+    galleryModule.galleryComments.textContent = data.comments;
+    galleryModule.galleryLikes.textContent = data.likes;
+  };
+
   element.addEventListener('click', function(evt) {
     evt.preventDefault();
-    var index;
-    var picture = event.target;
-    for (var i = 0; i < utilsModule.filteredPictures.length; i++) {
-      if (utilsModule.filteredPictures[i] === picture) {
-        index = i;
-        break;
-      }
+    if (evt.target.nodeName !== 'IMG') {
+      return false;
     }
-    galleryModule.showGallery(index);
+    galleryModule.showGallery();
+    showGalleryPic();
+    return true;
   });
 
   container.appendChild(element);
@@ -101,38 +103,9 @@ var renderPictures = function(pictures, page, replace) {
 };
 
 module.exports = {
+  drawNextPages: drawNextPages,
+  renderPictures: renderPictures,
+  getPictureElement: function() {
 
-  drawNextPages: function() {
-    utilsModule.pageNumber++;
-    renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber);
-  },
-
-  // Отрисовка каждой картинки
-  renderPictures: function(pictures, page, replace) {
-    if(replace) {
-      utilsModule.picturesContainer.innerHTML = '';
-    }
-
-    var from = page * utilsModule.PAGE_SIZE;
-    var to = from + utilsModule.PAGE_SIZE;
-
-    pictures.slice(from, to).forEach(function(picture) {
-      getPictureElement(picture, utilsModule.picturesContainer);
-    });
-
-    // Отрисовать все фото на экране с большим разрешением
-    var picturesContainerHeight = parseFloat(getComputedStyle(utilsModule.picturesContainer).height);
-
-    var blockIsNotFull = function() {
-      return window.innerHeight - picturesContainerHeight > 0;
-    };
-
-    var renderNextPages = function() {
-      while (blockIsNotFull() && utilsModule.isNextPageAvailable(pictures, utilsModule.pageNumber, utilsModule.PAGE_SIZE)) {
-        drawNextPages();
-      }
-    };
-
-    renderNextPages();
   }
 };
