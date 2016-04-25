@@ -18,5 +18,9 @@ module.exports = {
 
   isNextPageAvailable: function(pictures, page, pageSize) {
     return page < Math.floor(this.filteredPictures.length / pageSize);
+  },
+
+  getFilteredPictures: function() {
+    return this.filteredPictures;
   }
 };

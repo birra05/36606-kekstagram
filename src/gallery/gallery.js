@@ -1,22 +1,57 @@
 'use strict';
 
-// var utilsModule = require('../utils');
-
 var galleryContainer = document.querySelector('.gallery-overlay');
-var galleryList = document.querySelectorAll('.pictures img');
 var galleryImage = galleryContainer.querySelector('.gallery-overlay-image');
 var galleryComments = galleryContainer.querySelector('.comments-count');
 var galleryLikes = galleryContainer.querySelector('.likes-count');
 var galleryClose = galleryContainer.querySelector('.gallery-overlay-close');
-// var galleryPictures = [];
-// var currentPicIndex = 0;
+var galleryPictures = [];
+var currentPicIndex = 0;
 
-var showGallery = function() {
+// Функция, принимающая на вход массив объектов, описывающих фотографии, и сохраняющая их
+var setGalleryPics = function(pictures) {
+  galleryPictures = pictures;
+  return galleryPictures;
+};
+
+// Показать фото в галерее
+var showGalleryPic = function() {
+  var currentPicture = galleryPictures[currentPicIndex];
+  galleryImage.src = currentPicture.url;
+  galleryComments.textContent = currentPicture.comments;
+  galleryLikes.textContent = currentPicture.likes;
+};
+
+// Показать галерею
+var showGallery = function(index) {
+  currentPicIndex = index;
+  showGalleryPic();
+
+  galleryImage.addEventListener('click', onPhotoClick);
+
   galleryContainer.classList.remove('invisible');
+  galleryContainer.addEventListener('keydown', onDocumentKeyDown);
+  galleryContainer.addEventListener('click', onContainerClick);
+};
+
+// Обработчик события клика по фотографии onPhotoClick, показывает следующую фотографию
+var onPhotoClick = function() {
+  if (currentPicIndex <= galleryPictures.length) {
+    currentPicIndex++;
+    showGalleryPic();
+    console.log(currentPicIndex);
+  } else {
+    currentPicIndex = 0;
+  }
 };
 
 var hideGallery = function() {
   galleryContainer.classList.add('invisible');
+
+  // Удаление всех обработчиков событий
+  galleryImage.removeEventListener('click', onPhotoClick);
+  galleryContainer.removeEventListener('keydown', onDocumentKeyDown);
+  galleryContainer.removeEventListener('click', onContainerClick);
 };
 
 galleryClose.addEventListener('click', function(evt) {
@@ -24,10 +59,21 @@ galleryClose.addEventListener('click', function(evt) {
   hideGallery();
 });
 
+// Закрытие галереи по нажатию ESC - НЕ РАБОТАЕТ! :(
+var onDocumentKeyDown = function(evt) {
+  if(evt.keyСode === 27) {
+    hideGallery();
+  }
+};
+
+// Закрытие галереи по нажатию на пустую область вокруг контейнера
+var onContainerClick = function(evt) {
+  if(evt.target.classList.contains('gallery-overlay')) {
+    hideGallery();
+  }
+};
+
 module.exports = {
-  galleryList: galleryList,
-  galleryImage: galleryImage,
-  galleryComments: galleryComments,
-  galleryLikes: galleryLikes,
-  showGallery: showGallery
+  showGallery: showGallery,
+  setGalleryPics: setGalleryPics
 };

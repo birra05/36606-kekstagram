@@ -47,19 +47,21 @@ var getPictureElement = function(data, container) {
     image.classList.add('picture-load-failure');
   }, 5000);
 
-  var showGalleryPic = function() {
-    galleryModule.galleryImage.src = data.url;
-    galleryModule.galleryComments.textContent = data.comments;
-    galleryModule.galleryLikes.textContent = data.likes;
-  };
-
+  // Обработчик события при клике на галерею
   element.addEventListener('click', function(evt) {
     evt.preventDefault();
     if (evt.target.nodeName !== 'IMG') {
       return false;
     }
-    galleryModule.showGallery();
-    showGalleryPic();
+    var list = utilsModule.getFilteredPictures();
+    var index = 0;
+    for (var i = 0; i < list.length; i++) {
+      if (data.url === list[i].url) {
+        index = i;
+      }
+    }
+
+    galleryModule.showGallery(index);
     return true;
   });
 
@@ -105,7 +107,5 @@ var renderPictures = function(pictures, page, replace) {
 module.exports = {
   drawNextPages: drawNextPages,
   renderPictures: renderPictures,
-  getPictureElement: function() {
-
-  }
+  getPictureElement: getPictureElement
 };
