@@ -1,5 +1,6 @@
 'use strict';
 
+var galleryModule = require('../gallery/gallery');
 var utilsModule = require('../utils');
 
 var elementToClone;
@@ -28,8 +29,8 @@ var getPictureElement = function(data, container) {
     // Отмена таймаута
     clearTimeout(imageLoadTimeout);
     image.src = data.url;
-    image.width = '182';
-    image.height = '182';
+    image.width = utilsModule.IMAGE_SIZE;
+    image.height = utilsModule.IMAGE_SIZE;
     image.alt = data.date;
   };
 
@@ -46,6 +47,24 @@ var getPictureElement = function(data, container) {
     image.classList.add('picture-load-failure');
   }, 5000);
 
+  // Обработчик события при клике на галерею
+  element.addEventListener('click', function(evt) {
+    evt.preventDefault();
+    if (evt.target.nodeName !== 'IMG') {
+      return false;
+    }
+    var list = utilsModule.getFilteredPictures();
+    var index = 0;
+    for (var i = 0; i < list.length; i++) {
+      if (data.url === list[i].url) {
+        index = i;
+      }
+    }
+
+    galleryModule.showGallery(index);
+    return true;
+  });
+
   container.appendChild(element);
   return element;
 };
@@ -56,7 +75,7 @@ var drawNextPages = function() {
   renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber);
 };
 
-// Отрисовка каждой картинки
+// Отрисовка всех картинок
 var renderPictures = function(pictures, page, replace) {
   if(replace) {
     utilsModule.picturesContainer.innerHTML = '';
@@ -86,38 +105,6 @@ var renderPictures = function(pictures, page, replace) {
 };
 
 module.exports = {
-
-  drawNextPages: function() {
-    utilsModule.pageNumber++;
-    renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber);
-  },
-
-  // Отрисовка каждой картинки
-  renderPictures: function(pictures, page, replace) {
-    if(replace) {
-      utilsModule.picturesContainer.innerHTML = '';
-    }
-
-    var from = page * utilsModule.PAGE_SIZE;
-    var to = from + utilsModule.PAGE_SIZE;
-
-    pictures.slice(from, to).forEach(function(picture) {
-      getPictureElement(picture, utilsModule.picturesContainer);
-    });
-
-    // Отрисовать все фото на экране с большим разрешением
-    var picturesContainerHeight = parseFloat(getComputedStyle(utilsModule.picturesContainer).height);
-
-    var blockIsNotFull = function() {
-      return window.innerHeight - picturesContainerHeight > 0;
-    };
-
-    var renderNextPages = function() {
-      while (blockIsNotFull() && utilsModule.isNextPageAvailable(pictures, utilsModule.pageNumber, utilsModule.PAGE_SIZE)) {
-        drawNextPages();
-      }
-    };
-
-    renderNextPages();
-  }
+  drawNextPages: drawNextPages,
+  renderPictures: renderPictures
 };
