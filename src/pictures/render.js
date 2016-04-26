@@ -106,6 +106,5 @@ var renderPictures = function(pictures, page, replace) {
 
 module.exports = {
   drawNextPages: drawNextPages,
-  renderPictures: renderPictures,
-  getPictureElement: getPictureElement
+  renderPictures: renderPictures
 };

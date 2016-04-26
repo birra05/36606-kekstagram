@@ -30,7 +30,7 @@ var showGallery = function(index) {
   galleryImage.addEventListener('click', onPhotoClick);
 
   galleryContainer.classList.remove('invisible');
-  galleryContainer.addEventListener('keydown', onDocumentKeyDown);
+  document.addEventListener('keydown', onDocumentKeyDown);
   galleryContainer.addEventListener('click', onContainerClick);
 };
 
@@ -45,12 +45,13 @@ var onPhotoClick = function() {
   }
 };
 
+// Скрыть галерею и удалить обработчики событий
 var hideGallery = function() {
   galleryContainer.classList.add('invisible');
 
   // Удаление всех обработчиков событий
   galleryImage.removeEventListener('click', onPhotoClick);
-  galleryContainer.removeEventListener('keydown', onDocumentKeyDown);
+  document.removeEventListener('keydown', onDocumentKeyDown);
   galleryContainer.removeEventListener('click', onContainerClick);
 };
 
@@ -61,7 +62,7 @@ galleryClose.addEventListener('click', function(evt) {
 
 // Закрытие галереи по нажатию ESC - НЕ РАБОТАЕТ! :(
 var onDocumentKeyDown = function(evt) {
-  if(evt.keyСode === 27) {
+  if(evt.keyCode === 27) {
     hideGallery();
   }
 };
