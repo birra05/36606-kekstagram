@@ -39,6 +39,7 @@ var getFilteredPictures = function(pictures, filter) {
 
 var setFilterEnabled = function(filter) {
   utilsModule.filteredPictures = getFilteredPictures(utilsModule.pics, filter);
+  // console.log(utilsModule.filteredPictures);
   myGallery.setGalleryPics(utilsModule.filteredPictures);
   utilsModule.pageNumber = 0;
   renderModule.renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber, true);

@@ -13,12 +13,12 @@ var Gallery = function() {
 
   this.setGalleryPics = function(pictures) {
     this.galleryPictures = pictures;
+    // console.log(this.galleryPictures, 'pictures');
     return this.galleryPictures;
   };
 
   this.showGalleryPic = function() {
     var currentPicture = this.galleryPictures[this.currentPicIndex];
-    console.log(this.galleryPictures);
     galleryImage.src = currentPicture.url;
     galleryComments.textContent = currentPicture.comments;
     galleryLikes.textContent = currentPicture.likes;
