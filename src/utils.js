@@ -7,6 +7,7 @@ var containerSides = picturesContainer.getBoundingClientRect();
 module.exports = {
   picturesContainer: document.querySelector('.pictures'),
   pics: [],
+  renderedPictures: [],
   filteredPictures: [],
   IMAGE_SIZE: 182,
   pageNumber: 0,

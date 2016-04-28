@@ -39,7 +39,6 @@ var onPhotoClick = function() {
   if (currentPicIndex <= galleryPictures.length) {
     currentPicIndex++;
     showGalleryPic();
-    console.log(currentPicIndex);
   } else {
     currentPicIndex = 0;
   }
