@@ -1,6 +1,6 @@
 'use strict';
 
-var galleryModule = require('../gallery/gallery');
+var Gallery = require('../gallery/gallery');
 var utilsModule = require('../utils');
 
 var elementToClone;
@@ -67,7 +67,7 @@ var Photo = function(data, container) {
       }
     }
 
-    galleryModule.showGallery(index);
+    Gallery.showGallery(index);
     return true;
   };
 
