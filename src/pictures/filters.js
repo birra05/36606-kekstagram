@@ -3,6 +3,7 @@
 var renderModule = require('./render');
 var utilsModule = require('../utils');
 var Gallery = require('../gallery/gallery');
+var myGallery = new Gallery();
 
 var filters = document.querySelector('.filters');
 
@@ -38,7 +39,6 @@ var getFilteredPictures = function(pictures, filter) {
 
 var setFilterEnabled = function(filter) {
   utilsModule.filteredPictures = getFilteredPictures(utilsModule.pics, filter);
-  var myGallery = new Gallery();
   myGallery.setGalleryPics(utilsModule.filteredPictures);
   utilsModule.pageNumber = 0;
   renderModule.renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber, true);

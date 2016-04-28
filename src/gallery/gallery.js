@@ -18,6 +18,7 @@ var Gallery = function() {
 
   this.showGalleryPic = function() {
     var currentPicture = this.galleryPictures[this.currentPicIndex];
+    console.log(this.galleryPictures);
     galleryImage.src = currentPicture.url;
     galleryComments.textContent = currentPicture.comments;
     galleryLikes.textContent = currentPicture.likes;
@@ -70,6 +71,4 @@ var Gallery = function() {
   };
 };
 
-module.exports = {
-  Gallery: Gallery
-};
+module.exports = Gallery;
