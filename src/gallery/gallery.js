@@ -1,8 +1,6 @@
 'use strict';
 
 var Gallery = function() {
-  var self = this;
-
   this.galleryContainer = document.querySelector('.gallery-overlay');
   var galleryImage = this.galleryContainer.querySelector('.gallery-overlay-image');
   var galleryComments = this.galleryContainer.querySelector('.comments-count');
@@ -13,7 +11,6 @@ var Gallery = function() {
 
   this.setGalleryPics = function(pictures) {
     this.galleryPictures = pictures;
-    // console.log(this.galleryPictures, 'pictures');
     return this.galleryPictures;
   };
 
@@ -28,11 +25,13 @@ var Gallery = function() {
     this.currentPicIndex = index;
     this.showGalleryPic();
 
-    galleryImage.addEventListener('click', this.onPhotoClick);
+    galleryImage.addEventListener('click', this.onPhotoClick.bind(this));
 
     this.galleryContainer.classList.remove('invisible');
-    document.addEventListener('keydown', this.onDocumentKeyDown);
-    this.galleryContainer.addEventListener('click', this.onContainerClick);
+
+    galleryClose.addEventListener('click', this.OnCloseClick.bind(this));
+    document.addEventListener('keydown', this.onDocumentKeyDown.bind(this));
+    this.galleryContainer.addEventListener('click', this.onContainerClick.bind(this));
   };
 
   this.onPhotoClick = function() {
@@ -44,20 +43,20 @@ var Gallery = function() {
     }
   };
 
-  galleryClose.addEventListener('click', function(evt) {
+  this.OnCloseClick = function(evt) {
     evt.preventDefault();
-    self.hideGallery();
-  });
+    this.hideGallery();
+  };
 
   this.onDocumentKeyDown = function(evt) {
     if(evt.keyCode === 27) {
-      self.hideGallery();
+      this.hideGallery();
     }
   };
 
   this.onContainerClick = function(evt) {
     if(evt.target.classList.contains('gallery-overlay')) {
-      self.hideGallery();
+      this.hideGallery();
     }
   };
 
@@ -65,10 +64,12 @@ var Gallery = function() {
     this.galleryContainer.classList.add('invisible');
 
     // Удаление всех обработчиков событий
-    galleryImage.removeEventListener('click', this.onPhotoClick);
-    document.removeEventListener('keydown', this.onDocumentKeyDown);
-    this.galleryContainer.removeEventListener('click', this.onContainerClick);
+    galleryImage.removeEventListener('click', this.onPhotoClick.bind(this));
+
+    galleryClose.removeEventListener('click', this.OnCloseClick.bind(this));
+    document.removeEventListener('keydown', this.onDocumentKeyDown.bind(this));
+    this.galleryContainer.removeEventListener('click', this.onContainerClick.bind(this));
   };
 };
 
-module.exports = Gallery;
+module.exports = new Gallery();
