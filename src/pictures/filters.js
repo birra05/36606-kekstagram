@@ -12,6 +12,15 @@ var filterType = {
   DISCUSSED: 'filter-discussed'
 };
 
+var isValidFilter = function(filter) {
+  for (var key in filterType) {
+    if (filter === filterType[key]) {
+      return true;
+    }
+  }
+  return false;
+};
+
 var DEFAULT_FILTER = filterType.POPULAR;
 
 // Убираем атрибут checked с фильтров. Вызывается сразу после объявления, чтобы при перезагрузке страницы фильтр не мигал
@@ -64,9 +73,11 @@ var getFilterFromLocalStorage = function() {
   return localStorage.getItem('filter');
 };
 
+var filterFromLocalStorage = getFilterFromLocalStorage();
+
 // Указываем последний примененный фильтр по умолчанию
 var currentFilter = function() {
-  if(localStorage.hasOwnProperty('filter')) {
+  if(localStorage.hasOwnProperty('filter') && isValidFilter(filterFromLocalStorage)) {
     filters.querySelector('#' + getFilterFromLocalStorage()).setAttribute('checked', true);
     return getFilterFromLocalStorage();
   } else {
