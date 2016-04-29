@@ -33,7 +33,7 @@ getPictures(function(loadedPictures) {
   utilsModule.pics = loadedPictures;
 
   filtersModule.setFiltrationEnabled();
-  filtersModule.setFilterEnabled('filter-popular');
+  filtersModule.setFilterEnabled(filtersModule.currentFilter());
   scrollModule.setScrollEnabled();
   utilsModule.picturesContainer.classList.remove('pictures-loading');
 });

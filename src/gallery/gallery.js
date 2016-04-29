@@ -9,11 +9,13 @@ var Gallery = function() {
   this.galleryPictures = [];
   this.currentPicIndex = 0;
 
+  // Описываем фотографии и сохраняем их
   this.setGalleryPics = function(pictures) {
     this.galleryPictures = pictures;
     return this.galleryPictures;
   };
 
+  // Показать картинку в галерее
   this.showGalleryPic = function() {
     var currentPicture = this.galleryPictures[this.currentPicIndex];
     galleryImage.src = currentPicture.url;
@@ -21,6 +23,7 @@ var Gallery = function() {
     galleryLikes.textContent = currentPicture.likes;
   };
 
+  // Показать галерею
   this.showGallery = function(index) {
     this.currentPicIndex = index;
     this.showGalleryPic();
@@ -34,6 +37,7 @@ var Gallery = function() {
     this.galleryContainer.addEventListener('click', this.onContainerClick.bind(this));
   };
 
+  // Показ следующей фотографии в списке
   this.onPhotoClick = function() {
     if (this.currentPicIndex <= this.galleryPictures.length) {
       this.currentPicIndex++;
@@ -43,23 +47,27 @@ var Gallery = function() {
     }
   };
 
+  // Закрытие галереи
   this.OnCloseClick = function(evt) {
     evt.preventDefault();
     this.hideGallery();
   };
 
+  // Закрытие галереи по нажатию ESC
   this.onDocumentKeyDown = function(evt) {
     if(evt.keyCode === 27) {
       this.hideGallery();
     }
   };
 
+  // Закрытие галереи по нажатию на пустую область
   this.onContainerClick = function(evt) {
     if(evt.target.classList.contains('gallery-overlay')) {
       this.hideGallery();
     }
   };
 
+  // Закрытие галереи
   this.hideGallery = function() {
     this.galleryContainer.classList.add('invisible');
 
