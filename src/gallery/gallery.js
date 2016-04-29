@@ -1,80 +1,83 @@
 'use strict';
 
-var galleryContainer = document.querySelector('.gallery-overlay');
-var galleryImage = galleryContainer.querySelector('.gallery-overlay-image');
-var galleryComments = galleryContainer.querySelector('.comments-count');
-var galleryLikes = galleryContainer.querySelector('.likes-count');
-var galleryClose = galleryContainer.querySelector('.gallery-overlay-close');
-var galleryPictures = [];
-var currentPicIndex = 0;
+var Gallery = function() {
+  this.galleryContainer = document.querySelector('.gallery-overlay');
+  var galleryImage = this.galleryContainer.querySelector('.gallery-overlay-image');
+  var galleryComments = this.galleryContainer.querySelector('.comments-count');
+  var galleryLikes = this.galleryContainer.querySelector('.likes-count');
+  var galleryClose = this.galleryContainer.querySelector('.gallery-overlay-close');
+  this.galleryPictures = [];
+  this.currentPicIndex = 0;
 
-// Функция, принимающая на вход массив объектов, описывающих фотографии, и сохраняющая их
-var setGalleryPics = function(pictures) {
-  galleryPictures = pictures;
-  return galleryPictures;
+  // Описываем фотографии и сохраняем их
+  this.setGalleryPics = function(pictures) {
+    this.galleryPictures = pictures;
+    return this.galleryPictures;
+  };
+
+  // Показать картинку в галерее
+  this.showGalleryPic = function() {
+    var currentPicture = this.galleryPictures[this.currentPicIndex];
+    galleryImage.src = currentPicture.url;
+    galleryComments.textContent = currentPicture.comments;
+    galleryLikes.textContent = currentPicture.likes;
+  };
+
+  // Показать галерею
+  this.showGallery = function(index) {
+    this.currentPicIndex = index;
+    this.showGalleryPic();
+
+    galleryImage.addEventListener('click', this.onPhotoClick.bind(this));
+
+    this.galleryContainer.classList.remove('invisible');
+
+    galleryClose.addEventListener('click', this.OnCloseClick.bind(this));
+    document.addEventListener('keydown', this.onDocumentKeyDown.bind(this));
+    this.galleryContainer.addEventListener('click', this.onContainerClick.bind(this));
+  };
+
+  // Показ следующей фотографии в списке
+  this.onPhotoClick = function() {
+    if (this.currentPicIndex <= this.galleryPictures.length) {
+      this.currentPicIndex++;
+      this.showGalleryPic();
+    } else {
+      this.currentPicIndex = 0;
+    }
+  };
+
+  // Закрытие галереи
+  this.OnCloseClick = function(evt) {
+    evt.preventDefault();
+    this.hideGallery();
+  };
+
+  // Закрытие галереи по нажатию ESC
+  this.onDocumentKeyDown = function(evt) {
+    if(evt.keyCode === 27) {
+      this.hideGallery();
+    }
+  };
+
+  // Закрытие галереи по нажатию на пустую область
+  this.onContainerClick = function(evt) {
+    if(evt.target.classList.contains('gallery-overlay')) {
+      this.hideGallery();
+    }
+  };
+
+  // Закрытие галереи
+  this.hideGallery = function() {
+    this.galleryContainer.classList.add('invisible');
+
+    // Удаление всех обработчиков событий
+    galleryImage.removeEventListener('click', this.onPhotoClick.bind(this));
+
+    galleryClose.removeEventListener('click', this.OnCloseClick.bind(this));
+    document.removeEventListener('keydown', this.onDocumentKeyDown.bind(this));
+    this.galleryContainer.removeEventListener('click', this.onContainerClick.bind(this));
+  };
 };
 
-// Показать фото в галерее
-var showGalleryPic = function() {
-  var currentPicture = galleryPictures[currentPicIndex];
-  galleryImage.src = currentPicture.url;
-  galleryComments.textContent = currentPicture.comments;
-  galleryLikes.textContent = currentPicture.likes;
-};
-
-// Показать галерею
-var showGallery = function(index) {
-  currentPicIndex = index;
-  showGalleryPic();
-
-  galleryImage.addEventListener('click', onPhotoClick);
-
-  galleryContainer.classList.remove('invisible');
-  document.addEventListener('keydown', onDocumentKeyDown);
-  galleryContainer.addEventListener('click', onContainerClick);
-};
-
-// Обработчик события клика по фотографии onPhotoClick, показывает следующую фотографию
-var onPhotoClick = function() {
-  if (currentPicIndex <= galleryPictures.length) {
-    currentPicIndex++;
-    showGalleryPic();
-    console.log(currentPicIndex);
-  } else {
-    currentPicIndex = 0;
-  }
-};
-
-// Скрыть галерею и удалить обработчики событий
-var hideGallery = function() {
-  galleryContainer.classList.add('invisible');
-
-  // Удаление всех обработчиков событий
-  galleryImage.removeEventListener('click', onPhotoClick);
-  document.removeEventListener('keydown', onDocumentKeyDown);
-  galleryContainer.removeEventListener('click', onContainerClick);
-};
-
-galleryClose.addEventListener('click', function(evt) {
-  evt.preventDefault();
-  hideGallery();
-});
-
-// Закрытие галереи по нажатию ESC - НЕ РАБОТАЕТ! :(
-var onDocumentKeyDown = function(evt) {
-  if(evt.keyCode === 27) {
-    hideGallery();
-  }
-};
-
-// Закрытие галереи по нажатию на пустую область вокруг контейнера
-var onContainerClick = function(evt) {
-  if(evt.target.classList.contains('gallery-overlay')) {
-    hideGallery();
-  }
-};
-
-module.exports = {
-  showGallery: showGallery,
-  setGalleryPics: setGalleryPics
-};
+module.exports = new Gallery();
