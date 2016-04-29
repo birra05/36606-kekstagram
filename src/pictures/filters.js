@@ -12,6 +12,7 @@ var filterType = {
   DISCUSSED: 'filter-discussed'
 };
 
+// Проверка фильтра
 var isValidFilter = function(filter) {
   for (var key in filterType) {
     if (filter === filterType[key]) {
@@ -22,16 +23,6 @@ var isValidFilter = function(filter) {
 };
 
 var DEFAULT_FILTER = filterType.POPULAR;
-
-// Убираем атрибут checked с фильтров. Вызывается сразу после объявления, чтобы при перезагрузке страницы фильтр не мигал
-// Знаю, что кривота дикая
-var removeFiltersCheckedAttr = function() {
-  for(var i = 0; i < filters.length; i++) {
-    filters[i].removeAttribute('checked');
-  }
-};
-
-removeFiltersCheckedAttr();
 
 // Спрятать блок с фильтрами
 filters.classList.add('hidden');
