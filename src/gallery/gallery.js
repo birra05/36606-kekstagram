@@ -8,6 +8,8 @@ var Gallery = function() {
   var galleryClose = this.galleryContainer.querySelector('.gallery-overlay-close');
   this.galleryPictures = [];
   this.currentPicIndex = 0;
+  this.currentHash = location.hash;
+  this.hashRegExp = new RegExp(/#photo\/(\S+)/);
 
   // Описываем фотографии и сохраняем их
   this.setGalleryPics = function(pictures) {
@@ -16,11 +18,17 @@ var Gallery = function() {
   };
 
   // Показать картинку в галерее
-  this.showGalleryPic = function() {
-    var currentPicture = this.galleryPictures[this.currentPicIndex];
+  this.showGalleryPic = function(hash) {
+    var currentPicture = this.galleryPictures.find(function(picture) {
+      console.log(hash.indexOf(picture.url) !== -1);
+      return hash.indexOf(picture.url) !== -1;
+    });
+
     galleryImage.src = currentPicture.url;
     galleryComments.textContent = currentPicture.comments;
     galleryLikes.textContent = currentPicture.likes;
+    this.currentPicIndex = this.galleryPictures.indexOf(currentPicture);
+    // var currentPicture = this.galleryPictures[this.currentPicIndex];
   };
 
   // Показать галерею
@@ -42,6 +50,7 @@ var Gallery = function() {
     if (this.currentPicIndex <= this.galleryPictures.length) {
       this.currentPicIndex++;
       this.showGalleryPic();
+      location.hash = this.galleryPictures[this.currentPicIndex].url;
     } else {
       this.currentPicIndex = 0;
     }
@@ -67,6 +76,14 @@ var Gallery = function() {
     }
   };
 
+  this.onHashChange = function() {
+    if(this.currentHash.match(this.hashRegExp)) {
+      this.showGallery(this.currentHash);
+    } else {
+      this.hideGallery();
+    }
+  };
+
   // Закрытие галереи
   this.hideGallery = function() {
     this.galleryContainer.classList.add('invisible');
@@ -77,7 +94,10 @@ var Gallery = function() {
     galleryClose.removeEventListener('click', this.OnCloseClick.bind(this));
     document.removeEventListener('keydown', this.onDocumentKeyDown.bind(this));
     this.galleryContainer.removeEventListener('click', this.onContainerClick.bind(this));
+    location.hash = '';
   };
+
+  window.addEventListener('hashchange', this.onHashChange.bind(this));
 };
 
 module.exports = new Gallery();
