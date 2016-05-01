@@ -101,7 +101,7 @@ var Gallery = function() {
     location.hash = '';
   };
 
-  window.addEventListener('hashchange', this.onHashChange);
+  window.addEventListener('hashchange', this.onHashChange.bind(this));
 };
 
 module.exports = new Gallery();
