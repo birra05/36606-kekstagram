@@ -8,8 +8,6 @@ var Gallery = function() {
   var galleryClose = this.galleryContainer.querySelector('.gallery-overlay-close');
   this.galleryPictures = [];
   this.currentPicIndex = 0;
-  this.currentHash = location.hash;
-  this.hashRegExp = new RegExp(/#photo\/(\S+)/);
 
   // Описываем фотографии и сохраняем их
   this.setGalleryPics = function(pictures) {
@@ -19,28 +17,24 @@ var Gallery = function() {
 
   // Показать картинку в галерее
   this.showGalleryPic = function(hash) {
-    var currentPicture;
+    var currentPicture = this.galleryPictures[this.currentPicIndex];
 
     if (hash) {
       currentPicture = this.galleryPictures.find(function(picture) {
         return hash.indexOf(picture.url) !== -1;
       });
-      this.currentPicIndex = this.galleryPictures.indexOf(currentPicture);
-      galleryImage.src = currentPicture;
-      galleryComments.textContent = this.currentPicIndex.comments;
-      galleryLikes.textContent = this.currentPicIndex.likes;
     } else {
       currentPicture = this.galleryPictures[this.currentPicIndex];
-      galleryImage.src = currentPicture.url;
-      galleryComments.textContent = currentPicture.comments;
-      galleryLikes.textContent = currentPicture.likes;
     }
+
+    this.currentPicIndex = this.galleryPictures.indexOf(currentPicture);
+    galleryImage.src = currentPicture.url;
+    galleryComments.textContent = currentPicture.comments;
+    galleryLikes.textContent = currentPicture.likes;
   };
 
   // Показать галерею
-  this.showGallery = function(index, hash) {
-    this.currentPicIndex = index;
-    this.currentHash = hash;
+  this.showGallery = function(hash) {
     this.showGalleryPic(hash);
 
     galleryImage.addEventListener('click', this.onPhotoClick.bind(this));
@@ -56,8 +50,8 @@ var Gallery = function() {
   this.onPhotoClick = function() {
     if (this.currentPicIndex <= this.galleryPictures.length) {
       this.currentPicIndex++;
-      // this.showGalleryPic(this.currentHash);
-      location.hash = this.galleryPictures[this.currentPicIndex].url;
+      // this.showGalleryPic();
+      window.location.hash = 'photo/' + this.galleryPictures[this.currentPicIndex].url;
     } else {
       this.currentPicIndex = 0;
     }
@@ -85,8 +79,10 @@ var Gallery = function() {
 
   // Проверка хэша страницы
   this.onHashChange = function() {
+    this.currentHash = window.location.hash;
+    this.hashRegExp = new RegExp(/#photo\/(\S+)/);
     if(this.currentHash.match(this.hashRegExp)) {
-      this.showGallery(this.currentHash);
+      this.showGallery();
     } else {
       this.hideGallery();
     }
@@ -105,7 +101,7 @@ var Gallery = function() {
     location.hash = '';
   };
 
-  window.addEventListener('hashchange', this.onHashChange.bind(this));
+  window.addEventListener('hashchange', this.onHashChange);
 };
 
 module.exports = new Gallery();
