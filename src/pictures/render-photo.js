@@ -67,8 +67,9 @@ var Photo = function(data, container) {
       }
     }
 
-    Gallery.showGallery(index);
+    // Gallery.showGallery(index);
     location.hash = 'photo/' + list[index].url;
+    console.log(Gallery.currentHash);
     return true;
   };
 

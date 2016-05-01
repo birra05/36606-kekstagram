@@ -19,22 +19,29 @@ var Gallery = function() {
 
   // Показать картинку в галерее
   this.showGalleryPic = function(hash) {
-    var currentPicture = this.galleryPictures.find(function(picture) {
-      console.log(hash.indexOf(picture.url) !== -1);
-      return hash.indexOf(picture.url) !== -1;
-    });
+    var currentPicture;
 
-    galleryImage.src = currentPicture.url;
-    galleryComments.textContent = currentPicture.comments;
-    galleryLikes.textContent = currentPicture.likes;
-    this.currentPicIndex = this.galleryPictures.indexOf(currentPicture);
-    // var currentPicture = this.galleryPictures[this.currentPicIndex];
+    if (hash) {
+      currentPicture = this.galleryPictures.find(function(picture) {
+        return hash.indexOf(picture.url) !== -1;
+      });
+      this.currentPicIndex = this.galleryPictures.indexOf(currentPicture);
+      galleryImage.src = currentPicture;
+      galleryComments.textContent = this.currentPicIndex.comments;
+      galleryLikes.textContent = this.currentPicIndex.likes;
+    } else {
+      currentPicture = this.galleryPictures[this.currentPicIndex];
+      galleryImage.src = currentPicture.url;
+      galleryComments.textContent = currentPicture.comments;
+      galleryLikes.textContent = currentPicture.likes;
+    }
   };
 
   // Показать галерею
-  this.showGallery = function(index) {
+  this.showGallery = function(index, hash) {
     this.currentPicIndex = index;
-    this.showGalleryPic();
+    this.currentHash = hash;
+    this.showGalleryPic(hash);
 
     galleryImage.addEventListener('click', this.onPhotoClick.bind(this));
 
@@ -49,7 +56,7 @@ var Gallery = function() {
   this.onPhotoClick = function() {
     if (this.currentPicIndex <= this.galleryPictures.length) {
       this.currentPicIndex++;
-      this.showGalleryPic();
+      // this.showGalleryPic(this.currentHash);
       location.hash = this.galleryPictures[this.currentPicIndex].url;
     } else {
       this.currentPicIndex = 0;
@@ -76,6 +83,7 @@ var Gallery = function() {
     }
   };
 
+  // Проверка хэша страницы
   this.onHashChange = function() {
     if(this.currentHash.match(this.hashRegExp)) {
       this.showGallery(this.currentHash);
