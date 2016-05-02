@@ -1,6 +1,7 @@
 'use strict';
 
 var renderPhotoModule = require('./render-photo');
+var Gallery = require('../gallery/gallery');
 var utilsModule = require('../utils');
 
 // Отрисовка картинки по скроллу или дорисовка на экране с широким разрешением
@@ -30,6 +31,9 @@ var renderPictures = function(pictures, page, replace) {
   });
 
   utilsModule.picturesContainer.appendChild(container);
+
+  // Проверка состояния строки
+  Gallery.onHashChange();
 
   // Отрисовать все фото на экране с большим разрешением
   var picturesContainerHeight = parseFloat(getComputedStyle(utilsModule.picturesContainer).height);
