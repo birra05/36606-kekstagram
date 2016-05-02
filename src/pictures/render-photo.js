@@ -54,8 +54,9 @@ var getPictureElement = function(data, container) {
 var Photo = function(data, container) {
   this.data = data;
   this.element = getPictureElement(data, container);
+  this.onPhotoListClick = this.onPhotoListClick.bind(this);
 
-  this.element.addEventListener('click', this.onPhotoListClick.bind(this));
+  this.element.addEventListener('click', this.onPhotoListClick);
   container.appendChild(this.element);
 };
 
@@ -77,7 +78,7 @@ Photo.prototype.onPhotoListClick = function(evt) {
 };
 
 Photo.prototype.remove = function() {
-  this.element.removeEventListener('click', this.onPhotoListClick.bind(this));
+  this.element.removeEventListener('click', this.onPhotoListClick);
   this.element.parentNode.removeChild(this.element);
 };
 
