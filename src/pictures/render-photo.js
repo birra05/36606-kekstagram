@@ -54,31 +54,31 @@ var getPictureElement = function(data, container) {
 var Photo = function(data, container) {
   this.data = data;
   this.element = getPictureElement(data, container);
-  this.onPhotoListClick = function(evt) {
-    evt.preventDefault();
-    if (evt.target.nodeName !== 'IMG') {
-      return false;
-    }
-    var list = utilsModule.getFilteredPictures();
-    var index = 0;
-    for (var i = 0; i < list.length; i++) {
-      if (data.url === list[i].url) {
-        index = i;
-      }
-    }
 
-    // Gallery.showGallery(Gallery.currentHash);
-    window.location.hash = 'photo/' + list[index].url;
-    return true;
-  };
-
-  this.remove = function() {
-    this.element.removeEventListener('click', this.onPhotoListClick);
-    this.element.parentNode.removeChild(this.element);
-  };
-
-  this.element.addEventListener('click', this.onPhotoListClick);
+  this.element.addEventListener('click', this.onPhotoListClick.bind(this));
   container.appendChild(this.element);
+};
+
+Photo.prototype.onPhotoListClick = function(evt) {
+  evt.preventDefault();
+  if (evt.target.nodeName !== 'IMG') {
+    return false;
+  }
+  var list = utilsModule.getFilteredPictures();
+  var index = 0;
+  for (var i = 0; i < list.length; i++) {
+    if (this.data.url === list[i].url) {
+      index = i;
+    }
+  }
+
+  window.location.hash = 'photo/' + list[index].url;
+  return true;
+};
+
+Photo.prototype.remove = function() {
+  this.element.removeEventListener('click', this.onPhotoListClick.bind(this));
+  this.element.parentNode.removeChild(this.element);
 };
 
 module.exports = {
