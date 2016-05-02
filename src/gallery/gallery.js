@@ -9,7 +9,13 @@ var Gallery = function() {
   this.galleryPictures = [];
   this.currentPicIndex = 0;
 
-  window.addEventListener('hashchange', this.onHashChange);
+  // Привязка методов
+  this.onPhotoClick = this.onPhotoClick.bind(this);
+  this.OnCloseClick = this.OnCloseClick.bind(this);
+  this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
+  this.onContainerClick = this.onContainerClick.bind(this);
+
+  window.addEventListener('hashchange', this.onHashChange.bind(this));
 };
 
 // Описываем фотографии и сохраняем их
@@ -40,13 +46,13 @@ Gallery.prototype.showGalleryPic = function(hash) {
 Gallery.prototype.showGallery = function(hash) {
   this.showGalleryPic(hash);
 
-  this.galleryImage.addEventListener('click', this.onPhotoClick.bind(this));
+  this.galleryImage.addEventListener('click', this.onPhotoClick);
 
   this.galleryContainer.classList.remove('invisible');
 
-  this.galleryClose.addEventListener('click', this.OnCloseClick.bind(this));
-  document.addEventListener('keydown', this.onDocumentKeyDown.bind(this));
-  this.galleryContainer.addEventListener('click', this.onContainerClick.bind(this));
+  this.galleryClose.addEventListener('click', this.OnCloseClick);
+  document.addEventListener('keydown', this.onDocumentKeyDown);
+  this.galleryContainer.addEventListener('click', this.onContainerClick);
 };
 
 // Показ следующей фотографии в списке
@@ -95,11 +101,11 @@ Gallery.prototype.hideGallery = function() {
   this.galleryContainer.classList.add('invisible');
 
   // Удаление всех обработчиков событий
-  this.galleryImage.removeEventListener('click', this.onPhotoClick.bind(this));
+  this.galleryImage.removeEventListener('click', this.onPhotoClick);
 
-  this.galleryClose.removeEventListener('click', this.OnCloseClick.bind(this));
-  document.removeEventListener('keydown', this.onDocumentKeyDown.bind(this));
-  this.galleryContainer.removeEventListener('click', this.onContainerClick.bind(this));
+  this.galleryClose.removeEventListener('click', this.OnCloseClick);
+  document.removeEventListener('keydown', this.onDocumentKeyDown);
+  this.galleryContainer.removeEventListener('click', this.onContainerClick);
   window.location.hash = '';
 };
 
