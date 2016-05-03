@@ -77,11 +77,23 @@ var currentFilter = function() {
   }
 };
 
+// Список фото изменяется определенным образом в соответствии с переданным фильтром и отрисовывается на страницу
 var setFilterEnabled = function(filter) {
   utilsModule.filteredPictures = getFilteredPictures(utilsModule.pics, filter);
   Gallery.setGalleryPics(utilsModule.filteredPictures);
   utilsModule.pageNumber = 0;
   renderModule.renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber, true);
+};
+
+// Добавляем обработчики клика элементам фильтра
+var setFiltrationEnabled = function() {
+  // Делегирование
+  filters.addEventListener('click', function(evt) {
+    if (evt.target.classList.contains('filters-radio')) {
+      setFilterEnabled(evt.target.id);
+      setFilterInLocalStorage(evt.target.id);
+    }
+  });
 };
 
 // После загрузки всех данных показать блок с фильтрами
@@ -90,14 +102,5 @@ filters.classList.remove('hidden');
 module.exports = {
   currentFilter: currentFilter,
   setFilterEnabled: setFilterEnabled,
-
-  setFiltrationEnabled: function() {
-    // Делегирование
-    filters.addEventListener('click', function(evt) {
-      if (evt.target.classList.contains('filters-radio')) {
-        setFilterEnabled(evt.target.id);
-        setFilterInLocalStorage(evt.target.id);
-      }
-    });
-  }
+  setFiltrationEnabled: setFiltrationEnabled
 };

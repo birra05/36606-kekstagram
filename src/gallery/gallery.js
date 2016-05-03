@@ -105,7 +105,6 @@ Gallery.prototype.hideGallery = function() {
   document.removeEventListener('keydown', this.onDocumentKeyDown);
   this.galleryContainer.removeEventListener('click', this.onContainerClick);
   window.location.hash = '';
-  console.log(this.currentHash);
 };
 
 module.exports = new Gallery();
