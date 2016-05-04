@@ -150,8 +150,12 @@ resizeForm.addEventListener('input', function() {
 
   if(x > imageWidth || y > imageHeight) {
     resizeButton.disabled = true;
+    // Cообщение об ошибке, если данные в форме невалидны
+    utilsModule.showElement(document.querySelector('.valid-message'));
   } else if(x <= imageWidth || y <= imageHeight) {
     resizeButton.disabled = false;
+    // Убираем сообщение об ошибке
+    utilsModule.hideElement(document.querySelector('.valid-message'));
   }
 
   currentResizer.setConstraint(+resizeLeft.value, +resizeTop.value, +resizeSide.value);

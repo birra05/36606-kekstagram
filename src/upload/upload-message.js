@@ -11,7 +11,8 @@ var uploadMessage = document.querySelector('.upload-message');
 var Action = {
   ERROR: 0,
   UPLOADING: 1,
-  CUSTOM: 2
+  CUSTOM: 2,
+  VALID_ERROR: 3
 };
 
 /**
@@ -31,6 +32,11 @@ var showMessage = function(action, message) {
       isError = true;
       message = message || 'Неподдерживаемый формат файла<br> <a href="' + document.location + '">Попробовать еще раз</a>.';
       break;
+
+    // case Action.VALID_ERROR:
+    //   isError = true;
+    //   message = message || 'Кадр должен находиться в пределах исходного изображения';
+    //   break;
   }
 
   uploadMessage.querySelector('.upload-message-container').innerHTML = message;
