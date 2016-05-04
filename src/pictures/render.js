@@ -1,19 +1,19 @@
 'use strict';
 
-var renderPhotoModule = require('./render-photo');
+var Photo = require('./photo');
 var Gallery = require('../gallery/gallery');
 var utilsModule = require('../utils');
 
 // Отрисовка картинки по скроллу или дорисовка на экране с широким разрешением
 var drawNextPages = function() {
-  utilsModule.pageNumber++;
-  renderPictures(utilsModule.filteredPictures, utilsModule.pageNumber);
+  utilsModule.PAGE_NUMBER++;
+  renderPictures(utilsModule.filteredPictures, utilsModule.PAGE_NUMBER);
 };
 
 // Отрисовка всех картинок
 var renderPictures = function(pictures, page, replace) {
   if(replace) {
-    utilsModule.pageNumber = 0;
+    utilsModule.PAGE_NUMBER = 0;
     utilsModule.renderedPictures.forEach(function(picture) {
       picture.remove();
     });
@@ -27,7 +27,7 @@ var renderPictures = function(pictures, page, replace) {
   var container = document.createDocumentFragment();
 
   pictures.slice(from, to).forEach(function(picture) {
-    utilsModule.renderedPictures.push(new renderPhotoModule.Photo(picture, container));
+    utilsModule.renderedPictures.push(new Photo(picture, container));
   });
 
   utilsModule.picturesContainer.appendChild(container);
@@ -43,7 +43,7 @@ var renderPictures = function(pictures, page, replace) {
   };
 
   var renderNextPages = function() {
-    while (blockIsNotFull() && utilsModule.isNextPageAvailable(pictures, utilsModule.pageNumber, utilsModule.PAGE_SIZE)) {
+    while (blockIsNotFull() && utilsModule.isNextPageAvailable(pictures, utilsModule.PAGE_NUMBER, utilsModule.PAGE_SIZE)) {
       drawNextPages();
     }
   };
