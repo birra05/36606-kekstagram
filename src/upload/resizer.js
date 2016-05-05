@@ -5,7 +5,7 @@
  * @param {string} image
  */
 
-var utilsModule = require('../utils');
+var utilsModule = require('../base/utils');
 
 var Resizer = function(image) {
   //  Изображение, с которым будет вестись работа.

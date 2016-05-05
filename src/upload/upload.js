@@ -4,7 +4,7 @@
  */
 'use strict';
 
-var utilsModule = require('../utils');
+var utilsModule = require('../base/utils');
 var Resizer = require('./resizer');
 var uploadFilterModule = require('./upload-filter');
 var uploadMessageModule = require('./upload-message');
@@ -123,10 +123,12 @@ resizeForm.addEventListener('reset', function(evt) {
 
   utilsModule.hideElement(resizeForm);
   utilsModule.showElement(uploadForm);
+  utilsModule.hideElement(document.querySelector('.valid-message'));
 });
 
 //Установка начальных значений в формы
 var setValues = function() {
+  // Ширина и высота изображения
   var imageWidth = currentResizer._image.naturalWidth;
   var imageHeight = currentResizer._image.naturalHeight;
 
@@ -143,6 +145,7 @@ var setValues = function() {
 
 // Проверка вводимых значений
 resizeForm.addEventListener('input', function() {
+  // Ширина и высота изображения
   var imageWidth = currentResizer._image.naturalWidth;
   var imageHeight = currentResizer._image.naturalHeight;
   var x = parseFloat(resizeLeft.value) + parseFloat(resizeSide.value);

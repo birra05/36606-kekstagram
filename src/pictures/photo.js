@@ -1,8 +1,10 @@
 'use strict';
 
-var utilsModule = require('../utils');
+var utilsModule = require('../base/utils');
+var BaseComponent = require('../base/base-component');
 
 var Photo = function(data, container) {
+  BaseComponent.call(this, this.element);
   this.data = data;
   this.container = container;
   this.createPictureElement();
@@ -11,6 +13,9 @@ var Photo = function(data, container) {
 
   this.element.addEventListener('click', this.onPhotoListClick);
 };
+
+// Наследование от базового компонента
+utilsModule.inherit(Photo, BaseComponent);
 
 // Создаем обертку, в которой будет находиться каждое фото
 Photo.prototype.createPictureElement = function() {
@@ -56,32 +61,23 @@ Photo.prototype.getPictureElement = function(data, container) {
     image.classList.add('picture-load-failure');
   }, utilsModule.IMAGE_LOAD_TIMEOUT);
 
-  container.appendChild(this.element);
-  return this.element;
+  // Наследование и перезапись метода, чтобы добавить контейнер для фото
+  BaseComponent.prototype.add.call(this, container);
 };
 
 // Клик на фото открывает галерею с соответствующей фоткой
 Photo.prototype.onPhotoListClick = function(evt) {
   evt.preventDefault();
-  if (evt.target.nodeName !== 'IMG') {
-    return false;
-  }
-  var list = utilsModule.getFilteredPictures();
-  var index = 0;
-  for (var i = 0; i < list.length; i++) {
-    if (this.data.url === list[i].url) {
-      index = i;
-    }
-  }
 
-  window.location.hash = 'photo/' + list[index].url;
-  return true;
+  window.location.hash = 'photo/' + this.data.url;
 };
 
 // Удалить элементы после переключения фильтра или перезагрузки страницы, вызывается в модуле renderModule
 Photo.prototype.remove = function() {
   this.element.removeEventListener('click', this.onPhotoListClick);
-  this.element.parentNode.removeChild(this.element);
+
+  // Наследование и перезапись метода, чтобы удалить фото
+  BaseComponent.prototype.remove.call(this, this.element);
 };
 
 module.exports = Photo;

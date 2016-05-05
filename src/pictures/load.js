@@ -2,7 +2,7 @@
 
 var filtersModule = require('./filters');
 var scrollModule = require('./scroll');
-var utilsModule = require('../utils');
+var utilsModule = require('../base/utils');
 
 // Загружаем данные из файла по XMLHttpRequest
 var getPictures = function(callback) {
