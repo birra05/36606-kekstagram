@@ -249,6 +249,22 @@ body {
   border-radius: 2px;
 }
 
+.valid-message {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  box-sizing: border-box;
+
+  width: 260px;
+  height: 60px;
+  padding: 5px;
+
+  background: #ffe753;
+  color: black;
+  text-align: center;
+  border: 2px solid black;
+}
+
 .upload-filter-controls {
   position: absolute;
   bottom: 10px;

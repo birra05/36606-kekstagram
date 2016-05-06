@@ -1,6 +1,10 @@
 'use strict';
 
+var utilsModule = require('../base/utils');
+var BaseComponent = require('../base/base-component');
+
 var Gallery = function() {
+  BaseComponent.call(this, this.element);
   this.galleryContainer = document.querySelector('.gallery-overlay');
   this.galleryPreview = document.querySelector('.gallery-overlay-preview');
   this.galleryImage = this.galleryContainer.querySelector('.gallery-overlay-image');
@@ -12,12 +16,14 @@ var Gallery = function() {
 
   // Привязка методов
   this.onPhotoClick = this.onPhotoClick.bind(this);
-  this.OnCloseClick = this.OnCloseClick.bind(this);
+  this.onCloseClick = this.onCloseClick.bind(this);
   this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this);
   this.onContainerClick = this.onContainerClick.bind(this);
 
   window.addEventListener('hashchange', this.onHashChange.bind(this));
 };
+
+utilsModule.inherit(Gallery, BaseComponent);
 
 // Описываем фотографии и сохраняем их
 Gallery.prototype.setGalleryPics = function(pictures) {
@@ -46,10 +52,10 @@ Gallery.prototype.showGalleryPic = function(hash) {
 // Показать галерею
 Gallery.prototype.showGallery = function(hash) {
   this.showGalleryPic(hash);
-  this.galleryContainer.classList.remove('invisible');
+  utilsModule.showElement(this.galleryContainer);
 
   this.galleryImage.addEventListener('click', this.onPhotoClick);
-  this.galleryClose.addEventListener('click', this.OnCloseClick);
+  this.galleryClose.addEventListener('click', this.onCloseClick);
   document.addEventListener('keydown', this.onDocumentKeyDown);
   this.galleryContainer.addEventListener('click', this.onContainerClick);
 };
@@ -65,7 +71,7 @@ Gallery.prototype.onPhotoClick = function() {
 };
 
 // Закрытие галереи
-Gallery.prototype.OnCloseClick = function(evt) {
+Gallery.prototype.onCloseClick = function(evt) {
   evt.preventDefault();
   this.hideGallery();
 };
@@ -97,11 +103,11 @@ Gallery.prototype.onHashChange = function() {
 
 // Закрытие галереи
 Gallery.prototype.hideGallery = function() {
-  this.galleryContainer.classList.add('invisible');
+  utilsModule.hideElement(this.galleryContainer);
 
   // Удаление всех обработчиков событий
   this.galleryImage.removeEventListener('click', this.onPhotoClick);
-  this.galleryClose.removeEventListener('click', this.OnCloseClick);
+  this.galleryClose.removeEventListener('click', this.onCloseClick);
   document.removeEventListener('keydown', this.onDocumentKeyDown);
   this.galleryContainer.removeEventListener('click', this.onContainerClick);
   window.location.hash = '';

@@ -1,6 +1,6 @@
 'use strict';
 
-var utilsModule = require('../utils');
+var utilsModule = require('../base/utils');
 
 /**
  * @type {HTMLElement}

@@ -2,6 +2,14 @@
 
 // Общие переменные и конструкторы
 
+// Функция inherit наследует один класс от другого, продлевая цепочку прототипов с использованием пустого конструктора
+
+var inherit = function(child, parent) {
+  function EmptyCtor() {}
+  EmptyCtor.prototype = parent.prototype;
+  child.prototype = new EmptyCtor();
+};
+
 // Для Resizer
 /**
  * Вспомогательный тип, описывающий квадрат.
@@ -100,11 +108,9 @@ var isNextPageAvailable = function(pictures, page, pageSize) {
   return page < Math.floor(this.filteredPictures.length / pageSize);
 };
 
-var getFilteredPictures = function() {
-  return this.filteredPictures;
-};
-
 module.exports = {
+  inherit: inherit,
+
   Square: Square,
   Coordinate: Coordinate,
   picturesContainer: picturesContainer,
@@ -123,6 +129,5 @@ module.exports = {
   setCookiesDate: setCookiesDate,
 
   isBottomReached: isBottomReached,
-  isNextPageAvailable: isNextPageAvailable,
-  getFilteredPictures: getFilteredPictures
+  isNextPageAvailable: isNextPageAvailable
 };

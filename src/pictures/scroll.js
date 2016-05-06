@@ -1,7 +1,7 @@
 'use strict';
 
 var renderModule = require('./render');
-var utilsModule = require('../utils');
+var utilsModule = require('../base/utils');
 
 // Обработчик события scroll у объекта window, который отображает следующую страницу
 // с фотографиями при достижении низа страницы
