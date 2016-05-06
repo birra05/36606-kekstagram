@@ -1,7 +1,7 @@
 'use strict';
 
 var renderModule = require('./render');
-var utilsModule = require('../utils');
+var utilsModule = require('../base/utils');
 var Gallery = require('../gallery/gallery');
 
 var filters = document.querySelector('.filters');

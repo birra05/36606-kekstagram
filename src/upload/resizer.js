@@ -5,10 +5,10 @@
  * @param {string} image
  */
 
-var utilsModule = require('../utils');
+var utilsModule = require('../base/utils');
 
 var Resizer = function(image) {
-   // Изображение, с которым будет вестись работа.
+  //  Изображение, с которым будет вестись работа.
   this._image = new Image();
   this._image.src = image;
 
@@ -18,8 +18,8 @@ var Resizer = function(image) {
 
   // Создаем холст только после загрузки изображения.
   this._image.onload = function() {
-     // Размер холста равен размеру загруженного изображения. Это нужно
-     // для удобства работы с координатами.
+    //  Размер холста равен размеру загруженного изображения. Это нужно
+    //  для удобства работы с координатами.
     this._container.width = this._image.naturalWidth;
     this._container.height = this._image.naturalHeight;
 
@@ -36,18 +36,18 @@ var Resizer = function(image) {
         this._container.width * INITIAL_SIDE_RATIO,
         this._container.height * INITIAL_SIDE_RATIO);
 
-     // Изначально предлагаемое кадрирование — часть по центру с размером в 3/4
-     // от размера меньшей стороны.
+    //  Изначально предлагаемое кадрирование — часть по центру с размером в 3/4
+    //  от размера меньшей стороны.
     this._resizeConstraint = new utilsModule.Square(
          this._container.width / 2 - side / 2,
          this._container.height / 2 - side / 2,
          side);
 
-     // Отрисовка изначального состояния канваса.
+    //  Отрисовка изначального состояния канваса.
     this.setConstraint();
   }.bind(this);
 
-   // Фиксирование контекста обработчиков.
+  //  Фиксирование контекста обработчиков.
   this._onDragStart = this._onDragStart.bind(this);
   this._onDragEnd = this._onDragEnd.bind(this);
   this._onDrag = this._onDrag.bind(this);
@@ -101,12 +101,12 @@ Resizer.prototype.redraw = function() {
 
   // Толщина линии.
   this._ctx.lineWidth = 3; //изменено для зигзага
-  // // Цвет обводки.
+  // Цвет обводки.
   // this._ctx.strokeStyle = '#ffe753';
-  // Размер штрихов. Первый элемент массива задает длину штриха, второй
-  // расстояние между соседними штрихами.
+  // // Размер штрихов. Первый элемент массива задает длину штриха, второй
+  // // расстояние между соседними штрихами.
   // this._ctx.setLineDash([15, 10]);
-  // Смещение первого штриха от начала линии.
+  // // Смещение первого штриха от начала линии.
   // this._ctx.lineDashOffset = 7;
 
   // Сохранение состояния канваса.
@@ -159,8 +159,8 @@ Resizer.prototype.redraw = function() {
   var lineWidth = this._ctx.lineWidth;
   var startX = -lineLength / 2 - lineWidth / 2;
   var startY = startX;
-  var zigzagSpacing = 10;
-  var zigzagNumber = Math.ceil(lineLength / zigzagSpacing);
+  var zigzagNumber = 30;
+  var zigzagSpacing = lineLength / zigzagNumber;
 
   this._ctx.beginPath();
   this._ctx.moveTo(startX, startY);
@@ -175,6 +175,7 @@ Resizer.prototype.redraw = function() {
       } else {
         y = startY;
       }
+
       this._ctx.lineTo(x, y);
     }
   };
@@ -226,7 +227,7 @@ Resizer.prototype.redraw = function() {
   this.drawZigzagBottom();
   this.drawZigzagLeft();
 
-  // this._ctx.stroke();
+  this._ctx.stroke();
 
   // Рамка, нарисованная точками
   this._ctx.fillStyle = '#ffe753';
@@ -240,7 +241,6 @@ Resizer.prototype.redraw = function() {
       this._ctx.arc(i, y, 3, 0, Math.PI * 2);
       this._ctx.closePath();
       this._ctx.fill();
-      // console.log('верхняя линия x: ', x, 'верхняя линия y: ', y);
     }
   };
 
@@ -253,12 +253,11 @@ Resizer.prototype.redraw = function() {
       this._ctx.arc(x, i, 3, 0, Math.PI * 2);
       this._ctx.closePath();
       this._ctx.fill();
-      // console.log('правая линия x: ', x, 'правая линия y: ', y);
     }
   };
 
   this.drawDottedBottom = function() {
-    var x = startX + lineLength + lineWidth;
+    var x = -startX;
     var y = -startY;
 
     for(var i = x; i >= x - lineLength - lineWidth; i -= 15 ) {
@@ -266,7 +265,6 @@ Resizer.prototype.redraw = function() {
       this._ctx.arc(i, y, 3, 0, Math.PI * 2);
       this._ctx.closePath();
       this._ctx.fill();
-      // console.log('нижняя линия x: ', x, 'нижняя линия y: ', y);
     }
   };
 
@@ -282,10 +280,10 @@ Resizer.prototype.redraw = function() {
     }
   };
 
-  this.drawDottedTop();
-  this.drawDottedRight();
-  this.drawDottedBottom();
-  this.drawDottedLeft();
+  // this.drawDottedTop();
+  // this.drawDottedRight();
+  // this.drawDottedBottom();
+  // this.drawDottedLeft();
 
   // Восстановление состояния канваса, которое было до вызова ctx.save
   // и последующего изменения системы координат. Нужно для того, чтобы

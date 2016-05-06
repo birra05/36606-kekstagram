@@ -2,7 +2,7 @@
 
 var Photo = require('./photo');
 var Gallery = require('../gallery/gallery');
-var utilsModule = require('../utils');
+var utilsModule = require('../base/utils');
 
 // Отрисовка картинки по скроллу или дорисовка на экране с широким разрешением
 var drawNextPages = function() {
